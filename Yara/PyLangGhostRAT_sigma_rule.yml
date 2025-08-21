@@ -1,0 +1,51 @@
+title: PyLangGhost RAT Lazarus Group Campaign
+id: b2c3d4e5-f6g7-8901-bcde-f23456789012
+status: experimental
+description: Detects PyLangGhost RAT activities associated with Lazarus Group ClickFix campaigns
+references:
+    - https://www.cryptika.com/lazarus-hackers-trick-users-to-believe-their-camera-or-microphone-is-blocked-to-deliver-pylangghost-rat/
+author: litemars
+date: 2025/08/21
+tags:
+    - attack.initial_access
+    - attack.persistence
+    - attack.credential_access
+    - attack.collection
+    - apt.lazarus
+    - apt.famous_chollima
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_initial:
+        CommandLine|contains:
+            - 'curl -k -o'
+            - 'nvidiaRelease.zip'
+            - 'Expand-Archive -Force'
+            - '360scanner.store'
+    selection_execution:
+        - Image|endswith:
+            - '\csshost.exe'
+            - '\wscript.exe'
+        - CommandLine|contains:
+            - 'nvidia.py'
+            - 'update.vbs'
+    selection_persistence:
+        - TargetObject|contains:
+            - 'Software\Microsoft\Windows\CurrentVersion\Run\csshost'
+        - Details|contains:
+            - 'csshost.exe'
+    selection_browser_theft:
+        - Image|contains:
+            - 'python'
+        - CommandLine|contains:
+            - 'Login Data'
+            - 'Local State'
+            - 'MetaMask'
+            - 'Coinbase'
+    condition: 1 of selection_*
+falsepositives:
+    - Legitimate Python applications
+    - Legitimate browser data access
+    - System administration scripts
+level: high

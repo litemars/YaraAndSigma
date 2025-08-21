@@ -1,0 +1,15 @@
+# YaraAndSigma
+
+This repository contains curated YARA and Sigma signatures for detecting advanced persistent threats (APT), malware, and related attack techniques. Each rule is organized by malware family or campaign and stored in its own file for clarity.
+
+## Updates
+
+New signatures are added every week to keep detection up-to-date with emerging threats. Contributions and suggestions are welcome.
+
+## Usage
+
+You can use these rules with YARA or integrate them into your security monitoring workflows.
+
+## License
+
+See individual files for license information.

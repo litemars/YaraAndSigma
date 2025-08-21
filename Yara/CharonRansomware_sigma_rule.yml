@@ -1,0 +1,51 @@
+---
+title: Charon Ransomware Activity Detection
+id: c3d4e5f6-g7h8-9012-cdef-345678901234
+status: experimental
+description: Detects Charon ransomware activities targeting Middle East organizations
+references:
+    - https://www.trendmicro.com/en_fi/research/25/h/new-ransomware-charon.html
+author: litemars
+date: 2025/08/21
+tags:
+    - attack.impact
+    - attack.defense_evasion
+    - attack.persistence
+    - attack.lateral_movement
+    - ransomware.charon
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_dll_sideloading:
+        - Image|endswith: '\Edge.exe'
+        - ParentImage|contains: 'cookie_exporter.exe'
+        - CommandLine|contains: 'msedge.dll'
+    selection_process_injection:
+        - Image|endswith: '\svchost.exe'
+        - ParentImage|endswith: '\Edge.exe'
+    selection_arguments:
+        CommandLine|contains:
+            - '--debug='
+            - '--shares='
+            - '--paths='
+            - '--sf'
+    selection_anti_recovery:
+        CommandLine|contains:
+            - 'vssadmin delete shadows'
+            - 'wmic shadowcopy delete'
+            - 'bcdedit /set'
+    selection_service_creation:
+        - ServiceName: 'WWC'
+        - ServiceFileName|contains: '\System32\Drivers\WWC.sys'
+    selection_encryption:
+        - Image|contains: 'charon'
+        - CommandLine|contains: 
+            - '.charon'
+            - 'OopsCharonHere'
+    condition: 1 of selection_*
+falsepositives:
+    - Legitimate Edge browser processes
+    - System maintenance activities
+    - Backup operations
+level: critical
