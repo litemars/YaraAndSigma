@@ -1,0 +1,312 @@
+title: DripDropper Apache ActiveMQ Exploitation
+id: 2c4d6e8f-3a5b-7c9d-2e4f-6a8b9c1d3e5f
+status: experimental
+description: Detects DripDropper malware exploitation of Apache ActiveMQ CVE-2023-46604
+author: litemars
+date: 2025/08/28
+references:
+    - https://thehackernews.com/2025/08/apache-activemq-flaw-exploited-to.html
+    - https://www.secpod.com/blog/exploitation-in-progress-apache-activemq-vulnerability-used-to-deliver-dripdropper-malware/
+tags:
+    - attack.initial_access
+    - attack.t1190  # Exploit Public-Facing Application
+    - attack.persistence
+    - attack.t1543.002  # Systemd Service
+    - attack.defense_evasion
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_activemq_exploit:
+        ProcessName|contains: 'java'
+        CommandLine|contains:
+            - 'activemq'
+            - 'org.apache.activemq'
+        ParentProcessName|contains:
+            - 'activemq'
+            - 'java'
+    
+    selection_curl_download:
+        ProcessName: '/usr/bin/curl'
+        CommandLine|contains:
+            - 'repo1.maven.org'
+            - 'activemq-client-'
+            - 'activemq-openwire-legacy-'
+            - '-s -L -o'
+    
+    selection_ssh_modification:
+        ProcessName|endswith:
+            - '/sed'
+            - '/echo'
+            - '/tee'
+        CommandLine|contains:
+            - '/etc/ssh/sshd_config'
+            - 'PermitRootLogin yes'
+            - 'PasswordAuthentication yes'
+    
+    selection_suspicious_user:
+        ProcessName|contains:
+            - 'usermod'
+            - 'useradd'
+        CommandLine|contains:
+            - 'games'
+            - '/bin/bash'
+            - '/home/games'
+    
+    selection_dropper_execution:
+        ProcessName|contains: 'python'
+        CommandLine|contains:
+            - 'PyInstaller'
+            - '.pyc'
+        ProcessName|startswith: '/tmp/'
+    
+    condition: 
+        (selection_activemq_exploit and selection_curl_download) or
+        (selection_ssh_modification and selection_suspicious_user) or
+        (selection_dropper_execution and selection_curl_download)
+
+falsepositives:
+    - Legitimate ActiveMQ maintenance
+    - System administration activities
+    - Software updates
+
+level: critical
+
+---
+
+title: DripDropper Dropbox C2 Communication
+id: 3d5e7f9a-4b6c-8d1e-3f5a-7b9c1d3e5f7a
+status: experimental
+description: Detects DripDropper malware using Dropbox as C2 infrastructure
+author: Cybersecurity Analysis Team
+date: 2025/08/28
+tags:
+    - attack.command_and_control
+    - attack.t1071.001  # Application Layer Protocol
+    - attack.t1102.002  # Bidirectional Communication
+logsource:
+    category: network_connection
+    product: linux
+detection:
+    selection_dropbox_api:
+        DestinationHostname|contains:
+            - 'api.dropboxapi.com'
+            - 'content.dropboxapi.com'
+            - 'dropbox.com'
+        DestinationPort: 
+            - 443
+            - 80
+    
+    selection_suspicious_process:
+        ProcessName|contains:
+            - 'python'
+            - 'curl'
+            - 'wget'
+        ProcessName|startswith:
+            - '/tmp/'
+            - '/var/tmp/'
+            - '/dev/shm/'
+    
+    selection_http_headers:
+        RequestHeaders|contains:
+            - 'Authorization: Bearer'
+            - 'Dropbox-API-Arg'
+            - 'Content-Type: application/octet-stream'
+    
+    selection_api_endpoints:
+        Uri|contains:
+            - '/2/files/upload'
+            - '/2/files/download'
+            - '/2/files/list_folder'
+            - '/2/files/create_folder'
+    
+    condition: 
+        selection_dropbox_api and 
+        (selection_suspicious_process or selection_http_headers or selection_api_endpoints)
+
+falsepositives:
+    - Legitimate Dropbox client usage
+    - Backup applications
+    - File synchronization tools
+
+level: high
+
+---
+
+title: DripDropper Persistence Mechanisms
+id: 4e6f8a1b-5c7d-9e2f-4a6b-8c1d3e5f7a9b
+status: experimental
+description: Detects DripDropper persistence via cron jobs and SSH configuration
+author: Cybersecurity Analysis Team
+date: 2025/08/28
+tags:
+    - attack.persistence
+    - attack.t1053.003  # Cron
+    - attack.t1098.004  # SSH Authorized Keys
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_cron_modification:
+        TargetFilename|contains:
+            - '/var/spool/cron/crontabs/'
+            - '/etc/cron.d/'
+            - '/etc/crontab'
+        ProcessName|contains:
+            - 'python'
+            - 'sh'
+            - 'bash'
+    
+    selection_ssh_config_change:
+        TargetFilename: '/etc/ssh/sshd_config'
+        ProcessName|contains:
+            - 'sed'
+            - 'echo'
+            - 'tee'
+            - 'python'
+    
+    selection_authorized_keys:
+        TargetFilename|contains:
+            - '/.ssh/authorized_keys'
+            - '/home/games/.ssh/'
+        ProcessName|startswith:
+            - '/tmp/'
+            - '/var/tmp/'
+    
+    selection_systemd_service:
+        TargetFilename|contains:
+            - '/etc/systemd/system/'
+            - '/lib/systemd/system/'
+        TargetFilename|endswith: '.service'
+        ProcessName|contains: 'python'
+    
+    condition: 
+        selection_cron_modification or
+        selection_ssh_config_change or
+        selection_authorized_keys or
+        selection_systemd_service
+
+falsepositives:
+    - System administration
+    - Legitimate service installations
+    - User SSH key management
+
+level: high
+
+---
+
+title: DripDropper Post-Exploitation Patching
+id: 5f7a9c2d-6e8b-1f4a-5c7d-9e2f4a6b8c1d
+status: experimental
+description: Detects DripDropper's unique behavior of patching exploited vulnerabilities
+author: Cybersecurity Analysis Team
+date: 2025/08/28
+tags:
+    - attack.defense_evasion
+    - attack.t1070.004  # File Deletion
+    - attack.t1562.001  # Disable or Modify Tools
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_maven_download:
+        ProcessName|contains:
+            - 'curl'
+            - 'wget'
+        CommandLine|contains:
+            - 'repo1.maven.org'
+            - 'maven2'
+            - 'org/apache/activemq'
+    
+    selection_jar_replacement:
+        ProcessName|contains:
+            - 'cp'
+            - 'mv'
+            - 'rm'
+        CommandLine|contains:
+            - 'activemq'
+            - '.jar'
+        TargetFilename|contains:
+            - '/opt/activemq'
+            - '/apache-activemq'
+    
+    selection_service_restart:
+        ProcessName|contains:
+            - 'systemctl'
+            - 'service'
+        CommandLine|contains:
+            - 'restart'
+            - 'reload'
+            - 'activemq'
+    
+    timeframe: 30m
+    condition: 
+        selection_maven_download and
+        selection_jar_replacement and
+        selection_service_restart
+
+falsepositives:
+    - Legitimate ActiveMQ updates
+    - System maintenance
+    - Security patching activities
+
+level: medium
+
+---
+
+title: DripDropper Sliver C2 Framework Usage
+id: 6a8c1e3f-7d9b-2a5c-6e8b-1f4a5c7d9e2f
+status: experimental
+description: Detects Sliver C2 framework usage associated with DripDropper campaigns
+author: Cybersecurity Analysis Team
+date: 2025/08/28
+tags:
+    - attack.command_and_control
+    - attack.t1071.001  # Application Layer Protocol
+    - attack.t1573.002  # Asymmetric Cryptography
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_sliver_binary:
+        ProcessName|contains:
+            - 'sliver'
+            - 'sliver-'
+        ProcessName|startswith:
+            - '/tmp/'
+            - '/var/tmp/'
+            - '/dev/shm/'
+    
+    selection_sliver_network:
+        CommandLine|contains:
+            - '--mtls'
+            - '--wg'
+            - '--http'
+            - '--https'
+            - '--dns'
+    
+    selection_cloudflare_tunnel:
+        ProcessName|contains: 'cloudflared'
+        CommandLine|contains:
+            - 'tunnel'
+            - '--url'
+            - 'trycloudflare.com'
+    
+    selection_implant_behavior:
+        ProcessName|endswith: '/implant'
+        CommandLine|contains:
+            - 'beacon'
+            - 'session'
+            - 'shell'
+    
+    condition: 
+        selection_sliver_binary or
+        (selection_sliver_network and selection_cloudflare_tunnel) or
+        selection_implant_behavior
+
+falsepositives:
+    - Legitimate penetration testing
+    - Red team exercises
+    - Security research
+
+level: high

@@ -1,0 +1,337 @@
+title: ScarCruft NubSpy Phishing Campaign Detection  
+id: 7b9d1f3e-5c8a-2e4f-7b9d-1f3e5c8a2e4f
+status: experimental
+description: Detects ScarCruft (APT37) NubSpy backdoor delivery via phishing emails
+author: litemars
+date: 2025/08/28
+references:
+    - https://dev.to/0trust0day/scarcrufts-sophisticated-malware-attack-rust-pubnub-and-compromised-repos-2bbe
+    - https://www.cyware.com/resources/threat-briefings/daily-threat-briefing/cyware-daily-threat-intelligence-august-11-2025
+tags:
+    - attack.initial_access
+    - attack.t1566.001  # Spearphishing Attachment  
+    - attack.execution
+    - attack.t1059.001  # PowerShell
+    - attack.command_and_control
+    - attack.t1102.002  # Bidirectional Communication
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_rar_extraction:
+        ProcessName|endswith: 
+            - '\\winrar.exe'
+            - '\\7z.exe'
+            - '\\powershell.exe'
+        CommandLine|contains:
+            - '.rar'
+            - 'postal'
+            - '우편번호'  # Postal code in Korean
+            - 'zip code'
+    
+    selection_lnk_execution:
+        ProcessName|endswith: '\\cmd.exe'
+        ParentProcessName|endswith: '\\explorer.exe'
+        CommandLine|contains:
+            - '.lnk'
+            - 'autoit'
+            - 'AutoIt3.exe'
+    
+    selection_autoit_loader:
+        ProcessName|endswith:
+            - '\\AutoIt3.exe'
+            - '\\AutoIt3_x64.exe'
+        CommandLine|contains:
+            - '/AutoIt3ExecuteLine'
+            - '/ErrorStdOut'
+    
+    selection_powershell_encoded:
+        ProcessName|endswith: '\\powershell.exe'
+        CommandLine|contains:
+            - 'EncodedCommand'
+            - 'Invoke-Expression'
+            - 'IEX'
+            - 'ExecutionPolicy Bypass'
+            - 'WindowStyle Hidden'
+    
+    condition: 
+        selection_rar_extraction or
+        (selection_lnk_execution and selection_autoit_loader) or
+        selection_powershell_encoded
+
+falsepositives:
+    - Legitimate archive extractions
+    - System administration scripts
+    - Software installations
+
+level: high
+
+---
+
+title: NubSpy PubNub C2 Communication
+id: 8c1e4f6a-9d2b-5f8c-1e4f-6a9d2b5f8c1e  
+status: experimental
+description: Detects NubSpy malware using PubNub for command and control
+author: Cybersecurity Analysis Team
+date: 2025/08/28
+tags:
+    - attack.command_and_control
+    - attack.t1071.001  # Application Layer Protocol
+    - attack.t1102.002  # Bidirectional Communication
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    selection_pubnub_domains:
+        DestinationHostname|contains:
+            - 'pubnub.com'
+            - 'ps.pndsn.com'
+            - 'pndsn.com'
+    
+    selection_pubnub_endpoints:
+        Uri|contains:
+            - '/v1/publish/'
+            - '/v2/subscribe/'
+            - '/v2/presence/'
+            - '/time/0'
+    
+    selection_suspicious_process:
+        ProcessName|endswith:
+            - '\\powershell.exe'
+            - '\\AutoIt3.exe'
+            - '\\rundll32.exe'
+            - '\\regsvr32.exe'
+    
+    selection_http_parameters:
+        RequestParameters|contains:
+            - 'uuid='
+            - 'channel='
+            - 'callback='
+            - 'subscribe_key='
+            - 'publish_key='
+    
+    condition: 
+        selection_pubnub_domains and
+        (selection_pubnub_endpoints or selection_suspicious_process or selection_http_parameters)
+
+falsepositives:
+    - Legitimate PubNub applications
+    - Real-time messaging apps
+    - IoT device communications
+
+level: medium
+
+---
+
+title: ScarCruft Registry Autorun Disabling
+id: 9f2a6d8b-1c4e-7f9a-2d8b-6d8b1c4e7f9a
+status: experimental  
+description: Detects NubSpy disabling Windows startup folder autoruns
+author: Cybersecurity Analysis Team
+date: 2025/08/28
+tags:
+    - attack.defense_evasion
+    - attack.t1112  # Modify Registry
+    - attack.persistence
+    - attack.t1547.001  # Registry Run Keys
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection_run_key_modification:
+        TargetObject|contains: 
+            - 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run'
+            - 'HKLM\Software\Microsoft\Windows\CurrentVersion\Run'
+        Details: '""'  # Empty string value
+    
+    selection_startup_folder_disable:
+        TargetObject|contains: 'StartupFolder'
+        ProcessName|endswith:
+            - '\\powershell.exe'
+            - '\\cmd.exe'
+            - '\\reg.exe'
+    
+    selection_autorun_disable:
+        ProcessName|endswith: '\\reg.exe'
+        CommandLine|contains:
+            - 'REG_SZ /d ""'
+            - '/v StartupFolder /t REG_SZ'
+            - 'CurrentVersion\\Run'
+    
+    condition: 
+        selection_run_key_modification or
+        selection_startup_folder_disable or  
+        selection_autorun_disable
+
+falsepositives:
+    - System cleanup utilities
+    - Security software
+    - Manual registry modifications
+
+level: medium
+
+---
+
+title: NubSpy Memory Execution Pattern
+id: 1a3b5c7d-2e4f-8a1b-3c7d-5c7d2e4f8a1b
+status: experimental
+description: Detects NubSpy in-memory payload execution techniques
+author: Cybersecurity Analysis Team  
+date: 2025/08/28
+tags:
+    - attack.execution
+    - attack.t1055  # Process Injection
+    - attack.defense_evasion
+    - attack.t1027  # Obfuscated Files or Information
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_memory_alloc:
+        ProcessName|endswith:
+            - '\\powershell.exe'
+            - '\\AutoIt3.exe'
+        CommandLine|contains:
+            - 'VirtualAlloc'
+            - 'WriteProcessMemory'
+            - 'CreateThread'
+            - 'CallWindowProc'
+    
+    selection_crypto_operations:
+        CommandLine|contains:
+            - 'CryptoStream'
+            - 'AesCryptoServiceProvider'
+            - 'RijndaelManaged'
+            - 'System.Security.Cryptography'
+    
+    selection_assembly_load:
+        CommandLine|contains:
+            - 'System.Reflection.Assembly'
+            - 'Assembly.Load'
+            - 'GetMethod'
+            - 'Invoke'
+    
+    selection_base64_decode:
+        CommandLine|contains:
+            - 'FromBase64String'
+            - 'Convert::FromBase64String'
+            - '[System.Convert]::FromBase64String'
+    
+    condition: 
+        selection_memory_alloc and
+        (selection_crypto_operations or selection_assembly_load or selection_base64_decode)
+
+falsepositives:
+    - Legitimate PowerShell scripts
+    - Software installations
+    - System utilities
+
+level: high
+
+---
+
+title: ScarCruft VCD Ransomware Deployment
+id: 2b4c6e8f-3d5a-9b2c-4e8f-6e8f3d5a9b2c
+status: experimental
+description: Detects VCD ransomware component of ScarCruft campaign
+author: Cybersecurity Analysis Team
+date: 2025/08/28
+tags:
+    - attack.impact
+    - attack.t1486  # Data Encrypted for Impact
+    - attack.t1485  # Data Destruction
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection_vcd_files:
+        TargetFilename|endswith: '.VCD'
+        ProcessName|endswith: '.exe'
+    
+    selection_ransom_note:
+        TargetFilename|contains:
+            - 'README_VCD.txt'
+            - 'RECOVERY'
+            - '복구'  # Recovery in Korean
+    
+    selection_crypto_activity:
+        ProcessName|endswith: '.exe'
+        CommandLine|contains:
+            - 'RSACryptoServiceProvider'
+            - 'AES-256-CBC' 
+            - 'CreateEncryptor'
+    
+    selection_self_delete:
+        ProcessName|endswith: '\\cmd.exe'
+        CommandLine|contains:
+            - 'del /f /q'
+            - 'sdelete'
+        ParentProcessName|endswith: '.exe'
+    
+    condition: 
+        (selection_vcd_files and selection_ransom_note) or
+        (selection_crypto_activity and selection_self_delete) or
+        (selection_vcd_files and selection_crypto_activity)
+
+falsepositives:
+    - Legitimate file encryption software
+    - Backup applications
+    - File compression tools
+
+level: critical
+
+---
+
+title: ScarCruft Multi-Language Lure Detection
+id: 3c5e7f9a-4d6b-1c3e-5f9a-7f9a4d6b1c3e
+status: experimental
+description: Detects ScarCruft postal code update lure documents
+author: Cybersecurity Analysis Team
+date: 2025/08/28  
+tags:
+    - attack.initial_access
+    - attack.t1566.001  # Spearphishing Attachment
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection_lure_filenames:
+        TargetFilename|contains:
+            - 'postal'
+            - 'zip code'
+            - '우편번호'  # Postal code Korean
+            - 'update'
+            - '업데이트'  # Update Korean
+    
+    selection_file_types:
+        TargetFilename|endswith:
+            - '.doc'
+            - '.docx' 
+            - '.pdf'
+            - '.rar'
+            - '.zip'
+            - '.lnk'
+    
+    selection_korean_content:
+        FileContent|contains:
+            - '우편번호 업데이트'
+            - '우편 서비스'
+            - '주소 변경'
+    
+    selection_english_content:
+        FileContent|contains:
+            - 'postal code update'
+            - 'zip code service'
+            - 'address change'
+    
+    condition: 
+        selection_lure_filenames and 
+        selection_file_types and
+        (selection_korean_content or selection_english_content)
+
+falsepositives:
+    - Legitimate postal service communications
+    - Address update notifications
+    - Government correspondence
+
+level: medium

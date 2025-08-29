@@ -1,0 +1,52 @@
+title: GodRAT Remote Access Trojan Detection
+id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+status: experimental
+description: Detects activities related to GodRAT RAT targeting financial institutions
+references:
+    - https://securelist.com/godrat/117119/
+author: litemars
+date: 2025/08/21
+tags:
+    - attack.initial_access
+    - attack.persistence
+    - attack.defense_evasion
+    - attack.command_and_control
+    - apt.winnti
+    - apt.apt41
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_files:
+        - Image|endswith:
+            - '\curl.exe'
+            - '\cmd.exe'
+            - '\svchost.exe'
+        - CommandLine|contains:
+            - '-Puppet'
+            - 'GETGOD'
+    selection_registry:
+        - TargetObject|contains:
+            - 'MyStartupApp'
+            - 'Software\Microsoft\Windows\CurrentVersion\Run'
+        - Details|contains:
+            - 'curl.exe'
+            - 'Valve.exe'
+    selection_paths:
+        - Image|contains:
+            - '\google\chrome.exe'
+            - '\google\msedge.exe'
+            - '\bugreport\LoggerCollector.dll'
+        - ParentImage|endswith:
+            - '\Valve.exe'
+    selection_network:
+        - DestinationHostname|contains:
+            - '.cfd'
+        - DestinationPort:
+            - 443
+            - 8080
+    condition: 1 of selection_*
+falsepositives:
+    - Legitimate curl.exe usage
+    - Legitimate Chrome/Edge browser processes
+level: high
