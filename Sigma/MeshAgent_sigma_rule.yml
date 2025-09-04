@@ -1,0 +1,50 @@
+title: Weaponized MeshAgent Activity by Awaken Likho APT
+id: b5e9c3f4-2a6d-4b7e-9f8a-4d1c3e2f5a6b
+status: experimental
+description: Detects suspicious MeshAgent activity patterns associated with Awaken Likho APT group
+references:
+    - https://securelist.com/awaken-likho-apt-new-implant-campaign/114101/
+    - https://blog.criminalip.io/2024/10/25/awaken-likho/
+author: litemars
+date: 2025/09/04
+tags:
+    - attack.persistence
+    - attack.execution
+    - attack.command_and_control
+    - attack.t1053.005
+    - attack.t1071.001
+    - attack.t1218.010
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_meshagent:
+        Image|endswith:
+            - 'NetworkDrivers.exe'
+            - 'MicrosoftStores.exe'
+        CommandLine|contains:
+            - 'MeshAgent'
+            - 'MeshCentral'
+    selection_scheduled_task:
+        CommandLine|contains:
+            - 'MicrosoftEdgeUpdateTaskMachineMS'
+            - 'schtasks /create'
+        Image|endswith: 'schtasks.exe'
+    selection_autoit:
+        ParentImage|endswith: 'MicrosoftStores.exe'
+        CommandLine|contains: 'AutoIt'
+    selection_c2_communication:
+        CommandLine|contains:
+            - 'kwazindernuren.com'
+            - 'WebSocket'
+            - '38.180.101.12'
+    selection_persistence_registry:
+        Image|endswith: 'reg.exe'
+        CommandLine|contains:
+            - 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run'
+            - 'MeshAgent'
+    condition: 1 of selection_*
+falsepositives:
+    - Legitimate MeshCentral remote management deployments
+    - Authorized system administration activities
+level: high
