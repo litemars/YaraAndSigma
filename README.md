@@ -1,6 +1,18 @@
 # YaraAndSigma
 
-This repository contains curated YARA and Sigma signatures for detecting advanced persistent threats (APT), malware, and related attack techniques. Each rule is organized by malware family or campaign and stored in its own file for clarity.
+This repository contains curated YARA and Sigma signatures for detecting advanced persistent threats (APT), malware, and related attack techniques. 
+
+## List of Yara rules
+ - MeshAgent
+ - Charon
+ - DripDropper
+ - EggStreme
+ - GodRAT
+ - MostereRAT
+ - NubSpy
+ - PyLangGhost
+ - Tickler
+ - ZEROLOT
 
 ## Updates
 
