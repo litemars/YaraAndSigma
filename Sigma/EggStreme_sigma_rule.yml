@@ -1,0 +1,82 @@
+title: EggStreme APT Framework Detection
+id: a1b2c3d4-e5f6-7890-1234-567890abcdef
+status: experimental
+description: Detects activities associated with the EggStreme fileless malware framework used by Chinese APT groups
+author: litemars
+date: 2025-09-11
+references:
+    - https://www.bitdefender.com/en-us/blog/businessinsights/eggstreme-fileless-malware-cyberattack-apac
+    - https://thehackernews.com/2025/09/chinese-apt-deploys-eggstreme-fileless.html
+tags:
+    - attack.persistence
+    - attack.t1055
+    - attack.t1574.002
+    - attack.defense_evasion
+    - attack.t1140
+    - attack.collection
+    - attack.t1056.001
+    - cve.2024
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_files:
+        Image|endswith:
+            - '\WinMail.exe'
+            - '\xwizard.exe'
+        CommandLine|contains:
+            - 'mscorsvc.dll'
+            - 'xwizards.dll'
+    selection_paths:
+        Image|contains:
+            - '\Windows Mail\'
+            - '\WindowsApps\'
+        TargetFilename|contains:
+            - 'ielowutil.exe.mui'
+            - 'splwow64.exe.mui'
+            - 'Vault.dat'
+            - 'thumbcache.dat'
+            - 'ntuser.dat'
+            - 'burn.conf'
+    selection_network:
+        CommandLine|contains:
+            - 'myexternalip.com'
+            - 'sealtribute.org'
+            - 'sinhluc.net'
+            - 'fsstore.org'
+    selection_services:
+        Image|endswith:
+            - '\sc.exe'
+        CommandLine|contains:
+            - 'MSiSCSI'
+            - 'AppMgmt'
+            - 'SWPRV'
+            - 'SeDebugPrivilege'
+    selection_persistence:
+        TargetObject|contains:
+            - 'SYSTEM\CurrentControlSet\Services\MSiSCSI'
+            - 'SYSTEM\CurrentControlSet\Services\AppMgmt'
+            - 'SYSTEM\CurrentControlSet\Services\SWPRV'
+        Details|contains:
+            - 'msiscsi.dll'
+            - 'appmgmt.dll'
+    selection_injection:
+        Image|endswith:
+            - '\winlogon.exe'
+            - '\explorer.exe'
+            - '\MsMpEng.exe'
+        CommandLine|contains:
+            - 'VirtualProtect'
+            - 'CreateProcessWithToken'
+    condition: 1 of selection_*
+fields:
+    - Image
+    - CommandLine
+    - TargetFilename
+    - ParentImage
+    - User
+falsepositives:
+    - Legitimate Windows Mail usage
+    - Legitimate system administration
+    - Software installations
+level: high

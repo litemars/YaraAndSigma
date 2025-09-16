@@ -1,0 +1,74 @@
+title: MostereRAT Banking Trojan Activity
+id: b2c3d4e5-f6g7-8901-2345-678901bcdefg
+status: experimental
+description: Detects MostereRAT banking trojan activities including EPL usage and remote access tool deployment
+author: litemars
+date: 2025-09-11
+references:
+    - https://www.fortinet.com/blog/threat-research/mostererat-deployed-anydesk-tightvnc-for-covert-full-access
+    - https://thehackernews.com/2025/09/from-mostererat-to-clickfix-new-malware.html
+tags:
+    - attack.initial_access
+    - attack.t1566.002
+    - attack.defense_evasion
+    - attack.t1562.001
+    - attack.persistence
+    - attack.t1543.003
+    - attack.collection
+    - attack.t1056.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_remote_tools:
+        Image|endswith:
+            - '\AnyDesk.exe'
+            - '\TightVNC.exe'
+            - '\TigerVNC.exe'
+        ParentImage|contains:
+            - 'ProgramData\Windows'
+            - 'system32'
+    selection_epl:
+        CommandLine|contains:
+            - '.epk'
+            - '易语言'
+        Image|endswith:
+            - '.exe'
+    selection_system_abuse:
+        CommandLine|contains:
+            - 'TrustedInstaller'
+            - 'SeDebugPrivilege'
+            - 'Early Bird Injection'
+        Image|endswith:
+            - '\sc.exe'
+            - '\icacls.exe'
+            - '\takeown.exe'
+    selection_process_injection:
+        Image|endswith: '\svchost.exe'
+        CommandLine|contains:
+            - 'VirtualAllocEx'
+            - 'WriteProcessMemory'
+            - 'CreateRemoteThread'
+    selection_network_blocking:
+        CommandLine|contains:
+            - 'netsh advfirewall'
+            - 'Windows Filtering Platform'
+            - 'wfp'
+        Image|endswith: '\netsh.exe'
+    selection_qianniu_monitoring:
+        Image|contains:
+            - 'Qianniu'
+            - '千牛'
+        ParentImage|endswith: '\explorer.exe'
+    condition: 1 of selection_*
+fields:
+    - Image
+    - CommandLine
+    - ParentImage
+    - User
+    - LogonId
+falsepositives:
+    - Legitimate remote administration
+    - System maintenance activities
+    - Software installations
+level: high
