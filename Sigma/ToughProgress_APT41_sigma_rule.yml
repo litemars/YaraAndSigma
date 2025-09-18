@@ -1,0 +1,25 @@
+title: Suspicious Rundll32 Execution of APT41 ToughProgress Module
+id: c0a1f8a9-7d24-4e8b-a2c2-111111111111
+status: experimental
+description: Detects execution of PLUSDROP via Rundll32.exe as part of APT41 ToughProgress infection
+author: litemars
+date: 2025/09/18
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 1
+    Image|endswith: '\rundll32.exe'
+    CommandLine|contains:
+      - '6.jpg'
+      - '申報物品清單.pdf.lnk'
+  condition: selection
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+  - User
+falsepositives:
+  - Legitimate uses of rundll32 to load image resources (rare)
+level: high
