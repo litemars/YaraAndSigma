@@ -13,6 +13,7 @@ This repository contains curated YARA and Sigma signatures for detecting advance
  - PyLangGhost
  - Tickler
  - ZEROLOT
+ - MiniJunk
 
 ## Updates
 
