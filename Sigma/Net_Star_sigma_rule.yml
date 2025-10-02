@@ -1,0 +1,26 @@
+title: NET-STAR IIServerCore Execution
+id: 4d3f2c01-9a2d-4a5b-8b24-7fa1e0f5c6a7
+status: experimental
+description: Detect execution of the NET-STAR IIServerCore backdoor and AssemblyExecuter v2 loader in IIS worker processes.
+author: litemars
+references:
+    - https://unit42.paloaltonetworks.com/phantom-taurus-net-star/
+logsource:
+    product: windows
+    service: sysmon
+    definition: 'Detects Sysmon process creation events'
+detection:
+    selection:
+        EventID: 1
+        Image|endswith:
+            - '\w3wp.exe'
+            - '\iisexpress.exe'
+        CommandLine|contains:
+            - 'IIServerCore'
+            - 'AssemblyExecuter'
+    condition: selection
+fields:
+    - CommandLine
+    - ParentImage
+    - User
+level: high
