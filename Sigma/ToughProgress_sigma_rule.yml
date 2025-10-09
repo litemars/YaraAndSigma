@@ -1,0 +1,24 @@
+title: ToughProgress APT41 Google Calendar C2 Detection
+id: a7e4f2b9-8c3d-4f1a-9e5b-6c7d8f9a0b1c
+description: Detects ToughProgress malware using Google Calendar for command and control
+author: litemars
+date: 2025/10/09
+tags:
+    - attack.command_and_control
+    - attack.t1071.001
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    selection_calendar_api:
+        DestinationHostname|contains:
+            - 'calendar.google.com'
+            - 'www.googleapis.com'
+        DestinationPort: 443
+        
+    selection_process:
+        Image|endswith: '\\svchost.exe'
+        DestinationHostname|contains: 'calendar.google.com'
+        
+    condition: 1 of selection_*
+level: high

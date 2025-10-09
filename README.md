@@ -15,6 +15,7 @@ This repository contains curated YARA and Sigma signatures for detecting advance
  - ZEROLOT
  - MiniJunk
  - NET STAR
+ - ToughProgress
 
 ## Updates
 
