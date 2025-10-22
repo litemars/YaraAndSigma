@@ -73,7 +73,7 @@ title: ZEROLOT File System Manipulation
 id: 8f1a5b3c-9d4e-5f6a-7b8c-3d4e5f6a7b8c
 status: experimental
 description: Detects file system manipulation patterns consistent with ZEROLOT wiper malware
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.impact
@@ -126,7 +126,7 @@ title: ZEROLOT Network Communication Patterns
 id: 9a2b6c4d-1e3f-7a8b-9c2d-4e5f6a7b8c9d
 status: experimental
 description: Detects network communication patterns associated with ZEROLOT C2
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.command_and_control
@@ -184,7 +184,7 @@ title: ZEROLOT Process Injection and Evasion
 id: 1b3c5d7e-2f4a-8b9c-1d3e-5f6a7b8c9d1e
 status: experimental
 description: Detects process injection and evasion techniques used by ZEROLOT malware
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.defense_evasion

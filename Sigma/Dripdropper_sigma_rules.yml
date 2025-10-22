@@ -78,7 +78,7 @@ title: DripDropper Dropbox C2 Communication
 id: 3d5e7f9a-4b6c-8d1e-3f5a-7b9c1d3e5f7a
 status: experimental
 description: Detects DripDropper malware using Dropbox as C2 infrastructure
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.command_and_control
@@ -137,7 +137,7 @@ title: DripDropper Persistence Mechanisms
 id: 4e6f8a1b-5c7d-9e2f-4a6b-8c1d3e5f7a9b
 status: experimental
 description: Detects DripDropper persistence via cron jobs and SSH configuration
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.persistence
@@ -199,7 +199,7 @@ title: DripDropper Post-Exploitation Patching
 id: 5f7a9c2d-6e8b-1f4a-5c7d-9e2f4a6b8c1d
 status: experimental
 description: Detects DripDropper's unique behavior of patching exploited vulnerabilities
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.defense_evasion
@@ -258,7 +258,7 @@ title: DripDropper Sliver C2 Framework Usage
 id: 6a8c1e3f-7d9b-2a5c-6e8b-1f4a5c7d9e2f
 status: experimental
 description: Detects Sliver C2 framework usage associated with DripDropper campaigns
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.command_and_control

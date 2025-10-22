@@ -72,7 +72,7 @@ title: NubSpy PubNub C2 Communication
 id: 8c1e4f6a-9d2b-5f8c-1e4f-6a9d2b5f8c1e  
 status: experimental
 description: Detects NubSpy malware using PubNub for command and control
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.command_and_control
@@ -127,7 +127,7 @@ title: ScarCruft Registry Autorun Disabling
 id: 9f2a6d8b-1c4e-7f9a-2d8b-6d8b1c4e7f9a
 status: experimental  
 description: Detects NubSpy disabling Windows startup folder autoruns
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.defense_evasion
@@ -176,7 +176,7 @@ title: NubSpy Memory Execution Pattern
 id: 1a3b5c7d-2e4f-8a1b-3c7d-5c7d2e4f8a1b
 status: experimental
 description: Detects NubSpy in-memory payload execution techniques
-author: Cybersecurity Analysis Team  
+author: litemars
 date: 2025/08/28
 tags:
     - attack.execution
@@ -234,7 +234,7 @@ title: ScarCruft VCD Ransomware Deployment
 id: 2b4c6e8f-3d5a-9b2c-4e8f-6e8f3d5a9b2c
 status: experimental
 description: Detects VCD ransomware component of ScarCruft campaign
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28
 tags:
     - attack.impact
@@ -286,7 +286,7 @@ title: ScarCruft Multi-Language Lure Detection
 id: 3c5e7f9a-4d6b-1c3e-5f9a-7f9a4d6b1c3e
 status: experimental
 description: Detects ScarCruft postal code update lure documents
-author: Cybersecurity Analysis Team
+author: litemars
 date: 2025/08/28  
 tags:
     - attack.initial_access
