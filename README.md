@@ -16,6 +16,7 @@ This repository contains curated YARA and Sigma signatures for detecting advance
  - MiniJunk
  - NET STAR
  - ToughProgress
+ - LameHug
 
 ## Updates
 

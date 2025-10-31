@@ -1,0 +1,97 @@
+title: LameHug APT28 LLM-Powered Infostealer Detection
+id: 12f5e7a9-c3b2-4d8f-9e1a-5b7c2d4e6f8a
+status: experimental
+date: 2025-10-30
+modified: 2025-10-30
+author: litemars
+description: Detects LameHug infostealer deployed by APT28 (Fancy Bear) that uses LLMs to generate dynamic reconnaissance and exfiltration commands.
+references:
+    - https://www.picussecurity.com/resource/blog/lamehug-the-first-publicly-documented-case-of-a-malware-integrating-a-llm
+    - https://research.splunk.com/stories/lamehug/
+tags:
+    - attack.discovery
+    - attack.reconnaissance
+    - attack.collection
+    - attack.exfiltration
+    - apt.apt28
+    - malware.infostealer
+    - ai_powered_malware
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    # Stage 1: Process execution with PyInstaller packaging
+    process_execution:
+        EventID: 1
+        CommandLine|contains:
+            - '.pif'
+            - 'PyInstaller'
+        ParentImage|endswith:
+            - 'explorer.exe'
+            - 'winrar.exe'
+            - 'winzip.exe'
+    
+    # Stage 2: Hugging Face API communication
+    network_connection_hf:
+        EventID: 3
+        DestinationHostname|contains:
+            - 'api-inference.huggingface.co'
+            - 'huggingface.co'
+        DestinationPort: 443
+        Protocol: tcp
+    
+    # Stage 3: Reconnaissance command execution
+    reconnaissance_commands:
+        EventID: 1
+        CommandLine|contains|all:
+            - 'systeminfo'
+            - 'tasklist'
+        ParentImage|endswith: 'cmd.exe'
+    
+    # Stage 4: Data staging in ProgramData
+    file_creation_staging:
+        EventID: 11
+        TargetFilename|contains:
+            - 'C:\\ProgramData\\info'
+            - 'info.txt'
+    
+    # Stage 5: Active directory enumeration
+    ad_enumeration:
+        EventID: 1
+        CommandLine|contains|all:
+            - 'dsquery'
+            - 'user'
+    
+    # Stage 6: Exfiltration connection attempts
+    exfiltration_sftp:
+        EventID: 3
+        DestinationIp: '144.126.202.227'
+        DestinationPort: 22
+        Protocol: tcp
+    
+    exfiltration_http:
+        EventID: 3
+        DestinationHostname|contains: 'stayathomeclasses.com'
+        DestinationPort: 443
+    
+    # Stage 7: Registry modification for persistence
+    persistence_check:
+        EventID: 12
+        TargetObject|contains:
+            - 'Software\\Microsoft\\Windows\\CurrentVersion\\Run'
+            - 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce'
+    
+    filter_benign_sysmon:
+        Image|endswith:
+            - 'Windows Defender'
+            - 'MpCmdRun.exe'
+    
+    selection: process_execution or network_connection_hf or reconnaissance_commands or file_creation_staging or ad_enumeration or exfiltration_sftp or exfiltration_http or persistence_check
+    filter: filter_benign_sysmon
+    
+condition: selection and not filter
+falsepositives:
+    - Legitimate system administration tools
+    - Antivirus products performing discovery
+    - Network monitoring solutions
+level: critical
