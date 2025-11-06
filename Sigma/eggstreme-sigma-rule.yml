@@ -9,13 +9,8 @@ references:
     - https://thehackernews.com/2025/09/chinese-apt-deploys-eggstreme-fileless.html
 tags:
     - attack.persistence
-    - attack.t1055
-    - attack.t1574.002
     - attack.defense_evasion
-    - attack.t1140
     - attack.collection
-    - attack.t1056.001
-    - cve.2024
 logsource:
     category: process_creation
     product: windows

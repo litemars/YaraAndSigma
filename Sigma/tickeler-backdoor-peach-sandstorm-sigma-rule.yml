@@ -10,9 +10,6 @@ tags:
     - attack.execution
     - attack.persistence
     - attack.command_and_control
-    - attack.t1053.005
-    - attack.t1071.001
-    - attack.t1055.001
 logsource:
     category: process_creation
     product: windows

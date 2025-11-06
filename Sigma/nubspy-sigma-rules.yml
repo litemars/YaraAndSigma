@@ -9,11 +9,8 @@ references:
     - https://www.cyware.com/resources/threat-briefings/daily-threat-briefing/cyware-daily-threat-intelligence-august-11-2025
 tags:
     - attack.initial_access
-    - attack.t1566.001  # Spearphishing Attachment  
     - attack.execution
-    - attack.t1059.001  # PowerShell
     - attack.command_and_control
-    - attack.t1102.002  # Bidirectional Communication
 logsource:
     category: process_creation
     product: windows

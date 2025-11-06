@@ -64,7 +64,6 @@ date: 2025/10/22
 tags:
     - attack.persistence
     - attack.execution
-    - attack.t1053.005
 logsource:
     category: process_creation
     product: windows
@@ -93,7 +92,6 @@ date: 2025/10/22
 tags:
     - attack.command_and_control
     - attack.execution
-    - attack.t1059.001
 logsource:
     category: process_creation
     product: windows
@@ -152,7 +150,6 @@ date: 2025/10/22
 tags:
     - attack.persistence
     - attack.privilege_escalation
-    - attack.t1547.001
 logsource:
     category: registry_set
     product: windows

@@ -9,13 +9,8 @@ references:
     - https://thehackernews.com/2025/09/from-mostererat-to-clickfix-new-malware.html
 tags:
     - attack.initial_access
-    - attack.t1566.002
     - attack.defense_evasion
-    - attack.t1562.001
     - attack.persistence
-    - attack.t1543.003
-    - attack.collection
-    - attack.t1056.001
 logsource:
     category: process_creation
     product: windows

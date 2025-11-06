@@ -1,0 +1,71 @@
+title: PlugX RAT Malware Detection - UNC6384 Diplomatic Espionage
+id: c4f8e2a1-9b3d-4e7f-b2c5-3d8e1f4a6b9c
+status: experimental
+description: Detects PlugX Remote Access Trojan (SOGU.SEC variant) deployment and execution by UNC6384 threat actor targeting European diplomatic entities. Identifies DLL sideloading via legitimate processes, memory injection techniques, and C2 communication patterns.
+author: litemars
+date: 2025-11-06
+modified: 2025-11-06
+references:
+  - https://arcticwolf.com/resources/blog/unc6384-weaponizes-zdi-can-25373-vulnerability-to-deploy-plugx/
+  - https://www.darktrace.com/blog/plugx-malware-a-rats-race-to-adapt-and-survive
+  - https://securityaffairs.com/184083/apt/china-linked-unc6384-exploits-windows-zero-day-to-spy-on-european-diplomats.html
+tags:
+  - attack.execution
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent_process:
+    ParentImage|endswith:
+      - '\rundll32.exe'
+      - '\regsvcs.exe'
+      - '\regsvr32.exe'
+  selection_image:
+    Image|endswith:
+      - '\rundll32.exe'
+      - '\regsvcs.exe'
+      - '\canon'
+      - '\adobe'
+  selection_command_injection:
+    CommandLine|contains:
+      - 'MSGInitialize'
+      - 'SetWindowLongA'
+      - 'CreateRemoteThread'
+      - 'WriteProcessMemory'
+      - 'VirtualAllocEx'
+  selection_dll_sideload:
+    CommandLine|contains:
+      - '.dll'
+      - '.dat'
+      - 'C:\\ProgramData'
+  selection_c2_indicators:
+    CommandLine|contains:
+      - 'POST'
+      - 'HTTP/1.1'
+      - '__Host-next-auth-token'
+  selection_registry_persistence:
+    TargetObject|contains:
+      - 'Software\\Microsoft\\Windows\\CurrentVersion\\Run'
+      - 'Software\\Classes\\CLSID'
+  selection_file_creation:
+    TargetFilename|endswith:
+      - '.tmp'
+      - '.dat'
+  selection_usb_enumeration:
+    CommandLine|contains:
+      - 'USB'
+      - 'RECYCLER.BIN'
+  condition: (selection_parent_process or selection_image) and (selection_dll_sideload or (selection_command_injection and selection_c2_indicators)) and (selection_registry_persistence or selection_file_creation or selection_usb_enumeration)
+fields:
+  - ComputerName
+  - User
+  - CommandLine
+  - ParentImage
+  - Image
+  - TargetObject
+  - TargetFilename
+  - Hashes
+falsepositives:
+  - Legitimate use of rundll32.exe/regsvcs.exe in authorized development environments
+  - Administrative DLL loading operations with legitimate registry modifications
+level: high

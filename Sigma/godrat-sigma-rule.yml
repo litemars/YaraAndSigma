@@ -14,8 +14,6 @@ tags:
     - attack.persistence
     - attack.defense_evasion
     - attack.command_and_control
-    - apt.winnti
-    - apt.apt41
 logsource:
     category: process_creation
     product: windows
