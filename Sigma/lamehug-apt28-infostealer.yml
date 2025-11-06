@@ -13,9 +13,6 @@ tags:
     - attack.reconnaissance
     - attack.collection
     - attack.exfiltration
-    - apt.apt28
-    - malware.infostealer
-    - ai_powered_malware
 logsource:
     product: windows
     service: sysmon

@@ -11,9 +11,6 @@ tags:
     - attack.persistence
     - attack.execution
     - attack.command_and_control
-    - attack.t1053.005
-    - attack.t1071.001
-    - attack.t1218.010
 logsource:
     category: process_creation
     product: windows
