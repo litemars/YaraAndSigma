@@ -17,6 +17,8 @@ This repository contains curated YARA and Sigma signatures for detecting advance
  - NET STAR
  - ToughProgress
  - LameHug
+ - PlugX
+ - wAgent
 
 ## Updates
 
