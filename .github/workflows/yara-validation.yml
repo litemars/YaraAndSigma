@@ -10,9 +10,9 @@ jobs:
           sudo apt-get install yara
       - name: Syntax Check
         run: |
-          find ./yara -name "*.yar" -exec yara {} /dev/null \;
+          find ./Yara -name "*.yar" -exec yara {} /dev/null \;
       - name: YARA-CI Test
         run: |
           python3 -m pip install yara-ci
-          yara-ci test ./yara/*.yar
+          yara-ci test ./Yara/*.yar
 

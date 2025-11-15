@@ -76,8 +76,6 @@ jobs:
             // Extract stats
             const statsMatch = index.match(/\*\*Total Rules:\*\*\s*(\d+)\s*\((\d+)\s*YARA,\s*(\d+)\s*Sigma\)/);
 
-            let comment = '## 📋 Detection Rules Index Updated\n\n';
-
             if (statsMatch) {
               comment += `- **Total Rules:** ${statsMatch[1]}\n`;
               comment += `- **YARA Rules:** ${statsMatch[2]}\n`;
