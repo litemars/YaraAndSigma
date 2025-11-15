@@ -19,6 +19,7 @@ This repository contains curated YARA and Sigma signatures for detecting advance
  - LameHug
  - PlugX
  - wAgent
+ - Kalabur
 
 ## Updates
 
