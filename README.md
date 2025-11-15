@@ -3,23 +3,12 @@
 This repository contains curated YARA and Sigma signatures for detecting advanced persistent threats (APT), malware, and related attack techniques. 
 
 ## List of Yara rules
- - MeshAgent
- - Charon
- - DripDropper
- - EggStreme
- - GodRAT
- - MostereRAT
- - NubSpy
- - PyLangGhost
- - Tickler
- - ZEROLOT
- - MiniJunk
- - NET STAR
- - ToughProgress
- - LameHug
- - PlugX
- - wAgent
- - Kalabur
+
+See the full index of rules and their locations in the repository:
+
+- [Rules index](./RULES_INDEX.md)
+- [Sigma rules](./RULES_INDEX.md#sigma-rules)
+- [YARA rules](./RULES_INDEX.md#yara-rules)
 
 ## Updates
 

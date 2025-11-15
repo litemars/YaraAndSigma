@@ -49,8 +49,8 @@ jobs:
 
       - name: Commit and Push Index
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions-doc@github.com"
+          git config --local user.name "github-actions-doc"
           git add RULES_INDEX.md
-          git commit -m "docs: Auto-update rules index [skip ci]"
+          git commit -m "docs: Auto-update rules index"
           git push
