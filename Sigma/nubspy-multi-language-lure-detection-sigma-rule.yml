@@ -1,0 +1,53 @@
+title: ScarCruft Multi-Language Lure Detection
+id: 3c5e7f9a-4d6b-1c3e-5f9a-7f9a4d6b1c3e
+status: experimental
+description: Detects ScarCruft postal code update lure documents
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.initial_access
+    - attack.t1566.001  # Spearphishing Attachment
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection_lure_filenames:
+        TargetFilename|contains:
+            - 'postal'
+            - 'zip code'
+            - '우편번호'  # Postal code Korean
+            - 'update'
+            - '업데이트'  # Update Korean
+    
+    selection_file_types:
+        TargetFilename|endswith:
+            - '.doc'
+            - '.docx' 
+            - '.pdf'
+            - '.rar'
+            - '.zip'
+            - '.lnk'
+    
+    selection_korean_content:
+        FileContent|contains:
+            - '우편번호 업데이트'
+            - '우편 서비스'
+            - '주소 변경'
+    
+    selection_english_content:
+        FileContent|contains:
+            - 'postal code update'
+            - 'zip code service'
+            - 'address change'
+    
+    condition: 
+        selection_lure_filenames and 
+        selection_file_types and
+        (selection_korean_content or selection_english_content)
+
+falsepositives:
+    - Legitimate postal service communications
+    - Address update notifications
+    - Government correspondence
+
+level: medium

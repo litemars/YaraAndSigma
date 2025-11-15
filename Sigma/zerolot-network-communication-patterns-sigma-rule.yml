@@ -1,0 +1,55 @@
+title: ZEROLOT Network Communication Patterns
+id: 9a2b6c4d-1e3f-7a8b-9c2d-4e5f6a7b8c9d
+status: experimental
+description: Detects network communication patterns associated with ZEROLOT C2
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.command_and_control
+    - attack.t1071.001  # Application Layer Protocol
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    selection_outbound:
+        Initiated: 'true'
+        Protocol: 'tcp'
+        DestinationPort: 
+            - 80
+            - 443
+            - 8080
+            - 8443
+    
+    selection_process:
+        ProcessName|endswith:
+            - '\\rundll32.exe'
+            - '\\regsvr32.exe'
+            - '\\mshta.exe'
+            - '\\powershell.exe'
+    
+    selection_suspicious_domains:
+        DestinationHostname|contains:
+            - '.tk'
+            - '.ml'
+            - '.ga'
+            - '.cf'
+            - 'tempuri.org'
+            - 'pastebin.com'
+    
+    selection_user_agent:
+        RequestHeader|contains:
+            - 'Mozilla/4.0 (compatible; MSIE'
+            - 'User-Agent: *'
+            - 'curl/'
+            - 'wget/'
+    
+    condition: 
+        selection_outbound and 
+        (selection_process or selection_suspicious_domains or selection_user_agent)
+
+falsepositives:
+    - Legitimate software updates
+    - System telemetry
+    - Browser activity
+
+level: medium

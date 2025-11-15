@@ -1,0 +1,59 @@
+title: DripDropper Persistence Mechanisms
+id: 4e6f8a1b-5c7d-9e2f-4a6b-8c1d3e5f7a9b
+status: experimental
+description: Detects DripDropper persistence via cron jobs and SSH configuration
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.persistence
+    - attack.t1053.003  # Cron
+    - attack.t1098.004  # SSH Authorized Keys
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_cron_modification:
+        TargetFilename|contains:
+            - '/var/spool/cron/crontabs/'
+            - '/etc/cron.d/'
+            - '/etc/crontab'
+        ProcessName|contains:
+            - 'python'
+            - 'sh'
+            - 'bash'
+    
+    selection_ssh_config_change:
+        TargetFilename: '/etc/ssh/sshd_config'
+        ProcessName|contains:
+            - 'sed'
+            - 'echo'
+            - 'tee'
+            - 'python'
+    
+    selection_authorized_keys:
+        TargetFilename|contains:
+            - '/.ssh/authorized_keys'
+            - '/home/games/.ssh/'
+        ProcessName|startswith:
+            - '/tmp/'
+            - '/var/tmp/'
+    
+    selection_systemd_service:
+        TargetFilename|contains:
+            - '/etc/systemd/system/'
+            - '/lib/systemd/system/'
+        TargetFilename|endswith: '.service'
+        ProcessName|contains: 'python'
+    
+    condition: 
+        selection_cron_modification or
+        selection_ssh_config_change or
+        selection_authorized_keys or
+        selection_systemd_service
+
+falsepositives:
+    - System administration
+    - Legitimate service installations
+    - User SSH key management
+
+level: high

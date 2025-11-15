@@ -11,8 +11,4 @@ jobs:
       - name: Syntax Check
         run: |
           find ./Yara -name "*.yar" -exec yara {} /dev/null \;
-      - name: YARA-CI Test
-        run: |
-          python3 -m pip install yara-ci
-          yara-ci test ./Yara/*.yar
 

@@ -1,0 +1,46 @@
+title: ScarCruft Registry Autorun Disabling
+id: 9f2a6d8b-1c4e-7f9a-2d8b-6d8b1c4e7f9a
+status: experimental
+description: Detects NubSpy disabling Windows startup folder autoruns
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.defense_evasion
+    - attack.t1112  # Modify Registry
+    - attack.persistence
+    - attack.t1547.001  # Registry Run Keys
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection_run_key_modification:
+        TargetObject|contains: 
+            - 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run'
+            - 'HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run'
+        Details: '""'  # Empty string value
+    
+    selection_startup_folder_disable:
+        TargetObject|contains: 'StartupFolder'
+        ProcessName|endswith:
+            - '\\powershell.exe'
+            - '\\cmd.exe'
+            - '\\reg.exe'
+    
+    selection_autorun_disable:
+        ProcessName|endswith: '\\reg.exe'
+        CommandLine|contains:
+            - 'REG_SZ /d ""'
+            - '/v StartupFolder /t REG_SZ'
+            - 'CurrentVersion\\\\Run'
+    
+    condition: 
+        selection_run_key_modification or
+        selection_startup_folder_disable or  
+        selection_autorun_disable
+
+falsepositives:
+    - System cleanup utilities
+    - Security software
+    - Manual registry modifications
+
+level: medium

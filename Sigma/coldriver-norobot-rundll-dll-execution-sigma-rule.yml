@@ -1,0 +1,30 @@
+title: COLDRIVER NOROBOT Malicious DLL Execution via Rundll32
+id: 8f3a7b2c-4d9e-4f1a-b8c3-9e2a5f6d7c8b
+status: experimental
+description: Detects execution of NOROBOT malicious DLL via rundll32.exe with suspicious export functions mimicking CAPTCHA verification
+references:
+    - https://cloud.google.com/blog/topics/threat-intelligence/new-malware-russia-coldriver
+author: litemars
+date: 2025/10/22
+tags:
+    - attack.execution
+    - attack.defense_evasion
+    - attack.t1218.011
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_rundll:
+        Image|endswith: '\\rundll32.exe'
+        CommandLine|contains:
+            - 'iamnotarobot.dll'
+            - 'checkme.dll'
+            - 'machinerie.dll'
+    selection_export:
+        CommandLine|contains:
+            - 'humanCheck'
+            - 'verifyme'
+    condition: selection_rundll and selection_export
+falsepositives:
+    - Legitimate DLLs with similar naming (extremely rare)
+level: critical

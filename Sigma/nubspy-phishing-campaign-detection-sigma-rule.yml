@@ -1,0 +1,64 @@
+title: ScarCruft NubSpy Phishing Campaign Detection
+id: 7b9d1f3e-5c8a-2e4f-7b9d-1f3e5c8a2e4f
+status: experimental
+description: Detects ScarCruft (APT37) NubSpy backdoor delivery via phishing emails
+author: litemars
+date: 2025/08/28
+references:
+    - https://dev.to/0trust0day/scarcrufts-sophisticated-malware-attack-rust-pubnub-and-compromised-repos-2bbe
+    - https://www.cyware.com/resources/threat-briefings/daily-threat-briefing/cyware-daily-threat-intelligence-august-11-2025
+tags:
+    - attack.initial_access
+    - attack.execution
+    - attack.command_and_control
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_rar_extraction:
+        ProcessName|endswith: 
+            - '\\winrar.exe'
+            - '\\7z.exe'
+            - '\\powershell.exe'
+        CommandLine|contains:
+            - '.rar'
+            - 'postal'
+            - '우편번호'  # Postal code in Korean
+            - 'zip code'
+    
+    selection_lnk_execution:
+        ProcessName|endswith: '\\cmd.exe'
+        ParentProcessName|endswith: '\\explorer.exe'
+        CommandLine|contains:
+            - '.lnk'
+            - 'autoit'
+            - 'AutoIt3.exe'
+    
+    selection_autoit_loader:
+        ProcessName|endswith:
+            - '\\AutoIt3.exe'
+            - '\\AutoIt3_x64.exe'
+        CommandLine|contains:
+            - '/AutoIt3ExecuteLine'
+            - '/ErrorStdOut'
+    
+    selection_powershell_encoded:
+        ProcessName|endswith: '\\powershell.exe'
+        CommandLine|contains:
+            - 'EncodedCommand'
+            - 'Invoke-Expression'
+            - 'IEX'
+            - 'ExecutionPolicy Bypass'
+            - 'WindowStyle Hidden'
+    
+    condition: 
+        selection_rar_extraction or
+        (selection_lnk_execution and selection_autoit_loader) or
+        selection_powershell_encoded
+
+falsepositives:
+    - Legitimate archive extractions
+    - System administration scripts
+    - Software installations
+
+level: high

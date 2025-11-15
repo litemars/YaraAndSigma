@@ -1,0 +1,27 @@
+title: COLDRIVER YESROBOT Python Backdoor Scheduled Task Persistence
+id: 9d5c7f8e-6a3b-4f2c-b7d4-9e8a6f5b4c3d
+status: experimental
+description: Detects YESROBOT Python backdoor establishing persistence via scheduled task executing pythonw.exe with libsystemhealthcheck.py
+references:
+    - https://cloud.google.com/blog/topics/threat-intelligence/new-malware-russia-coldriver
+author: litemars
+date: 2025/10/22
+tags:
+    - attack.persistence
+    - attack.execution
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_task:
+        Image|endswith: '\\schtasks.exe'
+        CommandLine|contains: 'System health check'
+    selection_python:
+        Image|endswith: '\\pythonw.exe'
+        CommandLine|contains:
+            - 'libsystemhealthcheck.py'
+            - 'libcryptopydatasize.py'
+    condition: selection_task or selection_python
+falsepositives:
+    - Legitimate system health monitoring tools using Python (rare)
+level: high

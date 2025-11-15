@@ -1,0 +1,21 @@
+title: COLDRIVER MAYBEROBOT Logon Script Persistence
+id: 4a6c8e9b-3d2f-4e1a-b9c7-6f8d5e7a4b3c
+status: experimental
+description: Detects MAYBEROBOT establishing persistence through user logon script registry modification
+references:
+    - https://cloud.google.com/blog/topics/threat-intelligence/new-malware-russia-coldriver
+author: litemars
+date: 2025/10/22
+tags:
+    - attack.persistence
+    - attack.privilege_escalation
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|contains: 'Environment\\UserInitMprLogonScript'
+    condition: selection
+falsepositives:
+    - Legitimate logon scripts configured by administrators
+level: high

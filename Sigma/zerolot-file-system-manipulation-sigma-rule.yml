@@ -1,0 +1,50 @@
+title: ZEROLOT File System Manipulation
+id: 8f1a5b3c-9d4e-5f6a-7b8c-3d4e5f6a7b8c
+status: experimental
+description: Detects file system manipulation patterns consistent with ZEROLOT wiper malware
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.impact
+    - attack.t1485
+    - attack.t1083  # File and Directory Discovery
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection_file_enum:
+        EventID: 11  # Sysmon File Create
+        TargetFilename|contains:
+            - 'C:\\Users\\'
+            - 'C:\\Documents and Settings\\'
+        ProcessName|endswith:
+            - '.exe'
+        ProcessName|contains:
+            - 'temp'
+            - 'tmp'
+    
+    selection_zero_files:
+        EventID: 2  # Sysmon File Creation Time Changed
+        ProcessName|endswith: '\\fsutil.exe'
+    
+    selection_mass_file_access:
+        EventID: 1  # Sysmon Process Create
+        CommandLine|contains:
+            - 'for /r'
+            - 'dir /s'
+            - 'Get-ChildItem -Recurse'
+        ParentProcessName|endswith:
+            - '\\cmd.exe'
+            - '\\powershell.exe'
+    
+    timeframe: 5m
+    condition: 
+        (selection_file_enum and selection_zero_files) or
+        (selection_mass_file_access and count(*) > 100)
+
+falsepositives:
+    - File indexing services
+    - Antivirus scans
+    - Backup operations
+
+level: high

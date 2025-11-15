@@ -1,0 +1,49 @@
+title: ScarCruft VCD Ransomware Deployment
+id: 2b4c6e8f-3d5a-9b2c-4e8f-6e8f3d5a9b2c
+status: experimental
+description: Detects VCD ransomware component of ScarCruft campaign
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.impact
+    - attack.t1486  # Data Encrypted for Impact
+    - attack.t1485  # Data Destruction
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection_vcd_files:
+        TargetFilename|endswith: '.VCD'
+        ProcessName|endswith: '.exe'
+    
+    selection_ransom_note:
+        TargetFilename|contains:
+            - 'README_VCD.txt'
+            - 'RECOVERY'
+            - '복구'  # Recovery in Korean
+    
+    selection_crypto_activity:
+        ProcessName|endswith: '.exe'
+        CommandLine|contains:
+            - 'RSACryptoServiceProvider'
+            - 'AES-256-CBC' 
+            - 'CreateEncryptor'
+    
+    selection_self_delete:
+        ProcessName|endswith: '\\cmd.exe'
+        CommandLine|contains:
+            - 'del /f /q'
+            - 'sdelete'
+        ParentProcessName|endswith: '.exe'
+    
+    condition: 
+        (selection_vcd_files and selection_ransom_note) or
+        (selection_crypto_activity and selection_self_delete) or
+        (selection_vcd_files and selection_crypto_activity)
+
+falsepositives:
+    - Legitimate file encryption software
+    - Backup applications
+    - File compression tools
+
+level: critical

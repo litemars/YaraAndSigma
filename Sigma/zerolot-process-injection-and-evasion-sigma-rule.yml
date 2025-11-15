@@ -1,0 +1,61 @@
+title: ZEROLOT Process Injection and Evasion
+id: 1b3c5d7e-2f4a-8b9c-1d3e-5f6a7b8c9d1e
+status: experimental
+description: Detects process injection and evasion techniques used by ZEROLOT malware
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.defense_evasion
+    - attack.t1055  # Process Injection
+    - attack.t1497  # Virtualization/Sandbox Evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_injection:
+        EventID: 8  # Sysmon CreateRemoteThread
+        SourceProcessName|endswith:
+            - '.exe'
+        TargetProcessName|endswith:
+            - '\\explorer.exe'
+            - '\\winlogon.exe'
+            - '\\csrss.exe'
+    
+    selection_hollow:
+        EventID: 10  # Sysmon ProcessAccess
+        GrantedAccess: 
+            - '0x1F3FFF'
+            - '0x1FFFFF'
+            - '0x143A'
+        ProcessName|endswith: '.exe'
+        TargetProcessName|endswith:
+            - '\\svchost.exe'
+            - '\\rundll32.exe'
+    
+    selection_delay:
+        EventID: 1  # Sysmon Process Create
+        CommandLine|contains:
+            - 'ping -n'
+            - 'timeout /t'
+            - 'Start-Sleep'
+            - 'Thread.Sleep'
+    
+    selection_anti_analysis:
+        ProcessName|endswith: '.exe'
+        CommandLine|contains:
+            - 'IsDebuggerPresent'
+            - 'CheckRemoteDebuggerPresent'
+            - 'GetTickCount'
+            - 'rdtsc'
+    
+    condition: 
+        selection_injection or
+        selection_hollow or
+        (selection_delay and selection_anti_analysis)
+
+falsepositives:
+    - Legitimate software with anti-debugging
+    - System utilities
+    - Software installers
+
+level: high

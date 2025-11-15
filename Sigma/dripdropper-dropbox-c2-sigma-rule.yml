@@ -1,0 +1,56 @@
+title: DripDropper Dropbox C2 Communication
+id: 3d5e7f9a-4b6c-8d1e-3f5a-7b9c1d3e5f7a
+status: experimental
+description: Detects DripDropper malware using Dropbox as C2 infrastructure
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.command_and_control
+    - attack.t1071.001  # Application Layer Protocol
+    - attack.t1102.002  # Bidirectional Communication
+logsource:
+    category: network_connection
+    product: linux
+detection:
+    selection_dropbox_api:
+        DestinationHostname|contains:
+            - 'api.dropboxapi.com'
+            - 'content.dropboxapi.com'
+            - 'dropbox.com'
+        DestinationPort: 
+            - 443
+            - 80
+    
+    selection_suspicious_process:
+        ProcessName|contains:
+            - 'python'
+            - 'curl'
+            - 'wget'
+        ProcessName|startswith:
+            - '/tmp/'
+            - '/var/tmp/'
+            - '/dev/shm/'
+    
+    selection_http_headers:
+        RequestHeaders|contains:
+            - 'Authorization: Bearer'
+            - 'Dropbox-API-Arg'
+            - 'Content-Type: application/octet-stream'
+    
+    selection_api_endpoints:
+        Uri|contains:
+            - '/2/files/upload'
+            - '/2/files/download'
+            - '/2/files/list_folder'
+            - '/2/files/create_folder'
+    
+    condition: 
+        selection_dropbox_api and 
+        (selection_suspicious_process or selection_http_headers or selection_api_endpoints)
+
+falsepositives:
+    - Legitimate Dropbox client usage
+    - Backup applications
+    - File synchronization tools
+
+level: high

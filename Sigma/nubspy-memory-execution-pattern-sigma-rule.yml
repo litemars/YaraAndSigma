@@ -1,0 +1,55 @@
+title: NubSpy Memory Execution Pattern
+id: 1a3b5c7d-2e4f-8a1b-3c7d-5c7d2e4f8a1b
+status: experimental
+description: Detects NubSpy in-memory payload execution techniques
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.execution
+    - attack.t1055  # Process Injection
+    - attack.defense_evasion
+    - attack.t1027  # Obfuscated Files or Information
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_memory_alloc:
+        ProcessName|endswith:
+            - '\\powershell.exe'
+            - '\\AutoIt3.exe'
+        CommandLine|contains:
+            - 'VirtualAlloc'
+            - 'WriteProcessMemory'
+            - 'CreateThread'
+            - 'CallWindowProc'
+    
+    selection_crypto_operations:
+        CommandLine|contains:
+            - 'CryptoStream'
+            - 'AesCryptoServiceProvider'
+            - 'RijndaelManaged'
+            - 'System.Security.Cryptography'
+    
+    selection_assembly_load:
+        CommandLine|contains:
+            - 'System.Reflection.Assembly'
+            - 'Assembly.Load'
+            - 'GetMethod'
+            - 'Invoke'
+    
+    selection_base64_decode:
+        CommandLine|contains:
+            - 'FromBase64String'
+            - 'Convert::FromBase64String'
+            - '[System.Convert]::FromBase64String'
+    
+    condition: 
+        selection_memory_alloc and
+        (selection_crypto_operations or selection_assembly_load or selection_base64_decode)
+
+falsepositives:
+    - Legitimate PowerShell scripts
+    - Software installations
+    - System utilities
+
+level: high

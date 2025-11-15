@@ -1,0 +1,23 @@
+title: COLDRIVER NOROBOT Registry Persistence Mechanism
+id: 7e4b8c9d-5f2a-4e1b-a9d3-8c7f6e5a4b3c
+status: experimental
+description: Detects NOROBOT malware creating registry keys for split cryptographic key storage
+references:
+    - https://cloud.google.com/blog/topics/threat-intelligence/new-malware-russia-coldriver
+author: litemars
+date: 2025/10/22
+tags:
+    - attack.persistence
+    - attack.defense_evasion
+    - attack.t1112
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|contains: 'HKCU\\SOFTWARE\\Classes\\.pietas'
+        Details|contains: 'ratio'
+    condition: selection
+falsepositives:
+    - None expected
+level: critical

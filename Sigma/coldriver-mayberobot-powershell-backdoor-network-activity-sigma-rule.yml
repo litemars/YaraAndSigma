@@ -1,0 +1,31 @@
+title: COLDRIVER MAYBEROBOT PowerShell Backdoor Network Activity
+id: 6c8e9f7a-5b4d-4e3c-a8f5-7d9b6e5a4c3b
+status: experimental
+description: Detects MAYBEROBOT PowerShell backdoor communication patterns with C2 infrastructure
+references:
+    - https://cloud.google.com/blog/topics/threat-intelligence/new-malware-russia-coldriver
+author: litemars
+date: 2025/10/22
+tags:
+    - attack.command_and_control
+    - attack.execution
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_powershell:
+        Image|endswith: '\\powershell.exe'
+    selection_cmdline:
+        CommandLine|contains:
+            - 'DownloadString'
+            - 'IEX'
+            - 'Invoke-Expression'
+    selection_hidden:
+        CommandLine|contains:
+            - '-WindowStyle Hidden'
+            - '-ExecutionPolicy Bypass'
+    condition: selection_powershell and selection_cmdline and selection_hidden
+falsepositives:
+    - Legitimate administrative PowerShell scripts
+    - Software deployment tools
+level: high

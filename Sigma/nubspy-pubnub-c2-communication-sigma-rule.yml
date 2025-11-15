@@ -1,0 +1,52 @@
+title: NubSpy PubNub C2 Communication
+id: 8c1e4f6a-9d2b-5f8c-1e4f-6a9d2b5f8c1e
+status: experimental
+description: Detects NubSpy malware using PubNub for command and control
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.command_and_control
+    - attack.t1071.001  # Application Layer Protocol
+    - attack.t1102.002  # Bidirectional Communication
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    selection_pubnub_domains:
+        DestinationHostname|contains:
+            - 'pubnub.com'
+            - 'ps.pndsn.com'
+            - 'pndsn.com'
+    
+    selection_pubnub_endpoints:
+        Uri|contains:
+            - '/v1/publish/'
+            - '/v2/subscribe/'
+            - '/v2/presence/'
+            - '/time/0'
+    
+    selection_suspicious_process:
+        ProcessName|endswith:
+            - '\\powershell.exe'
+            - '\\AutoIt3.exe'
+            - '\\rundll32.exe'
+            - '\\regsvr32.exe'
+    
+    selection_http_parameters:
+        RequestParameters|contains:
+            - 'uuid='
+            - 'channel='
+            - 'callback='
+            - 'subscribe_key='
+            - 'publish_key='
+    
+    condition: 
+        selection_pubnub_domains and
+        (selection_pubnub_endpoints or selection_suspicious_process or selection_http_parameters)
+
+falsepositives:
+    - Legitimate PubNub applications
+    - Real-time messaging apps
+    - IoT device communications
+
+level: medium

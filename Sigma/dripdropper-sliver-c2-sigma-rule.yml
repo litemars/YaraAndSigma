@@ -1,0 +1,56 @@
+title: DripDropper Sliver C2 Framework Usage
+id: 6a8c1e3f-7d9b-2a5c-6e8b-1f4a5c7d9e2f
+status: experimental
+description: Detects Sliver C2 framework usage associated with DripDropper campaigns
+author: litemars
+date: 2025/08/28
+tags:
+    - attack.command_and_control
+    - attack.t1071.001  # Application Layer Protocol
+    - attack.t1573.002  # Asymmetric Cryptography
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_sliver_binary:
+        ProcessName|contains:
+            - 'sliver'
+            - 'sliver-'
+        ProcessName|startswith:
+            - '/tmp/'
+            - '/var/tmp/'
+            - '/dev/shm/'
+    
+    selection_sliver_network:
+        CommandLine|contains:
+            - '--mtls'
+            - '--wg'
+            - '--http'
+            - '--https'
+            - '--dns'
+    
+    selection_cloudflare_tunnel:
+        ProcessName|contains: 'cloudflared'
+        CommandLine|contains:
+            - 'tunnel'
+            - '--url'
+            - 'trycloudflare.com'
+    
+    selection_implant_behavior:
+        ProcessName|endswith: '/implant'
+        CommandLine|contains:
+            - 'beacon'
+            - 'session'
+            - 'shell'
+    
+    condition: 
+        selection_sliver_binary or
+        (selection_sliver_network and selection_cloudflare_tunnel) or
+        selection_implant_behavior
+
+falsepositives:
+    - Legitimate penetration testing
+    - Red team exercises
+    - Security research
+
+level: high
