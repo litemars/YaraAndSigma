@@ -1,9 +1,9 @@
 # YaraAndSigma
 
 
-![Yara validation](https://github.com/github/docs/actions/workflows/yara-validation.yml/badge.svg)
+![Yara validation](https://github.com/litemars/YaraAndSigma/actions/workflows/yara-validation.yml/badge.svg)
 
-![Sigma validation](https://github.com/github/docs/actions/workflows/sigma-validate.yml/badge.svg)
+![Sigma validation](https://github.com/litemars/YaraAndSigma/actions/workflows/sigma-validate.yml/badge.svg)
 
 This repository contains curated YARA and Sigma signatures for detecting advanced persistent threats (APT), malware, and related attack techniques. 
 
