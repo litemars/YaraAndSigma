@@ -1,5 +1,7 @@
 # YaraAndSigma
 
+[![GitHub Actions - workflow status](https://github.com/OWNER/REPO/actions/workflows/WORKFLOW_FILE.yml/badge.svg?branch=main)](https://github.com/OWNER/REPO/actions/workflows/WORKFLOW_FILE.yml)
+
 This repository contains curated YARA and Sigma signatures for detecting advanced persistent threats (APT), malware, and related attack techniques. 
 
 ## List of Yara rules
