@@ -45,7 +45,7 @@ jobs:
 
       - name: Generate Index
         run: |
-          python scripts/generate_rule_index.py
+          python .github/workflows/scripts/generate_rule_index.py
 
       - name: Check for Changes
         id: check_changes

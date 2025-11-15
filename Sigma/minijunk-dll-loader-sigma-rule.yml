@@ -15,8 +15,8 @@ detection:
       - "\\userenv.dll"
     # Non-standard location: not in System32
     TargetImage|contains:
-      - "\Temp\"
-      - "\AppData\Local\"
+      - "\\Temp\"
+      - "\\AppData\Local\"
   condition: selection
 falsepositives:
   - Legitimate DLLs renamed for testing
