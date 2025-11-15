@@ -1,6 +1,6 @@
 # Detection Rules Index
 
-**Generated:** 2025-11-15 18:51:19 UTC
+**Generated:** 2025-11-15 18:55:13 UTC
 
 **Total Rules:** 63 (28 YARA, 35 Sigma)
 
