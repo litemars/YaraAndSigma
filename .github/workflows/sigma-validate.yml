@@ -1,0 +1,14 @@
+name: Sigma Rule Validation
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      # Official SigmaHQ validator
+      - uses: SigmaHQ/sigma-rules-validator@v1
+        with:
+          paths: './Sigma'
+          schemaURL: 'https://raw.githubusercontent.com/SigmaHQ/sigma-specification/main/sigma-schema.json'
