@@ -1,0 +1,81 @@
+title: EndClient RAT - Suspicious AutoIT Script Execution
+id: 5b7d9a8f-4c3a-4f2b-a2d6-8e9c7f6a5b4d
+status: experimental
+description: Detects EndClient RAT delivery and execution via AutoIT scripts
+author: litemars
+date: 2025-11-20
+modified: 2025-11-20
+references:
+  - https://socprime.com/active-threats/endclient-rat-new-kimsuky-apt-malware/
+  - https://radar.offseq.com/threat/new-kimsuky-malware-endclient-rat-technical-report-d4b6f50b
+tags:
+  - attack.execution
+  - attack.persistence
+  - attack.t1059.003
+  - attack.t1059.005
+  - attack.t1547.009
+  - attack.t1053.005
+  - attack.t1036.005
+  - apt.kimsuky
+  - malware.endclient_rat
+
+logsource:
+  product: windows
+  service: sysmon
+  category: process_creation
+
+detection:
+  msi_install:
+    CommandLine|contains:
+      - 'StressClear.msi'
+      - 'msiexec /i'
+    Image|endswith:
+      - 'msiexec.exe'
+      - 'msi'
+
+  autoIt_execution:
+    Image|endswith:
+      - 'AutoIt3.exe'
+      - 'autoit3.exe'
+    CommandLine|contains:
+      - '.au3'
+      - 'payload.au3'
+
+  hidden_cmd:
+    Image|endswith:
+      - 'cmd.exe'
+    CommandLine|contains:
+      - 'hidden'
+      - '/c'
+    ParentImage|endswith:
+      - 'AutoIt3.exe'
+      - 'msiexec.exe'
+
+  schtasks_abuse:
+    CommandLine|contains:
+      - '/create'
+      - 'IoKlTr'
+      - 'hwpviewer.exe'
+    Image|endswith:
+      - 'schtasks.exe'
+      - 'schtasks'
+
+  service_copy:
+    CommandLine|contains:
+      - 'hwpviewer.exe'
+      - 'schtasks.exe'
+
+  selection:
+    - msi_install
+    - autoIt_execution
+    - hidden_cmd
+    - schtasks_abuse
+
+condition: selection
+
+falsepositives:
+  - Legitimate AutoIT script deployments
+  - Administrative automation tools using AutoIT
+  - Windows Update installations (low likelihood)
+
+level: high

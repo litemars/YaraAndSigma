@@ -1,0 +1,48 @@
+title: EndClient RAT - Registry Persistence Mechanisms
+id: 9d5c7f8e-6a2b-4f2c-b7d4-9e8a6f554c3d
+status: experimental
+description: Detects EndClient RAT registry modifications for persistence
+author: litemars
+date: 2025-11-20
+modified: 2025-11-20
+references:
+  - https://socprime.com/active-threats/endclient-rat-new-kimsuky-apt-malware/
+tags:
+  - attack.persistence
+  - attack.t1547.001
+  - attack.t1547.014
+  - apt.kimsuky
+  - malware.endclient_rat
+
+logsource:
+  product: windows
+  service: sysmon
+  category: registry_event
+
+detection:
+  hwpviewer_service:
+    TargetObject|contains:
+      - 'HKLM\System\CurrentControlSet\Services\hwpviewer'
+      - 'HKLM\Software\Microsoft\Windows\CurrentVersion\Run'
+
+  autorun_persistence:
+    EventType: 'SetValue'
+    Details|contains:
+      - 'hwpviewer.exe'
+      - 'StressClear'
+
+  suspicious_binary_path:
+    Details|contains:
+      - 'C:\Windows\Temp\hwpviewer.exe'
+      - 'C:\ProgramData\StressClear'
+
+  selection:
+    - hwpviewer_service
+    - (autorun_persistence and suspicious_binary_path)
+
+condition: selection
+
+falsepositives:
+  - Legitimate software installations
+
+level: high
