@@ -10,7 +10,7 @@ logsource:
   service: sysmon
 detection:
   selection:
-    EventID: 7                      # Sysmon DLL load
+    EventID: 7
     TargetImage|endswith:
       - "\\userenv.dll"
     # Non-standard location: not in System32

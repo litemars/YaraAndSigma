@@ -23,7 +23,7 @@ detection:
         CommandLine|contains:
             - '.rar'
             - 'postal'
-            - '우편번호'  # Postal code in Korean
+            - '우편번호'
             - 'zip code'
     
     selection_lnk_execution:

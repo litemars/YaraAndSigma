@@ -16,9 +16,7 @@ tags:
   - attack.t1547.009
   - attack.t1053.005
   - attack.t1036.005
-  - apt.kimsuky
-  - malware.endclient_rat
-
+  
 logsource:
   product: windows
   service: sysmon

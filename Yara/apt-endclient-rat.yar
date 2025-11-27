@@ -1,7 +1,7 @@
 rule APT_EndClient_RAT_Delivery {
     meta:
         description = "Detects EndClient RAT delivery via signed MSI package"
-        author = litemars
+        author = "litemars"
         date = "2025-11-20"
         severity = "high"
         family = "EndClient RAT"

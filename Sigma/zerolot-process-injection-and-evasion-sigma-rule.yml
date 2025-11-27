@@ -6,8 +6,8 @@ author: litemars
 date: 2025/08/28
 tags:
     - attack.defense_evasion
-    - attack.t1055  # Process Injection
-    - attack.t1497  # Virtualization/Sandbox Evasion
+    - attack.t1055
+    - attack.t1497
 logsource:
     category: process_creation
     product: windows

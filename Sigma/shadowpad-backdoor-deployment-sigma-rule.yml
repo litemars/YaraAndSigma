@@ -1,0 +1,96 @@
+title: ShadowPad Backdoor Deployment and C2 Communication
+id: 1a2b3c4d-5e6f-7g8h-9i0j-k1l2m3n4o5p6
+date: 2025-11-27
+author: litemars
+description: |
+  Detects ShadowPad APT backdoor deployment via WSUS RCE (CVE-2025-59287),
+  DLL sideloading, scheduled task persistence, and C2 communication patterns.
+  ShadowPad is a modular backdoor used by China-linked APT groups including APT41.
+
+logsource:
+    category: process_creation
+    product: windows
+
+detection:
+    # Stage 1: Initial Compromise via WSUS RCE
+    wsus_rce_exploitation:
+        CommandLine|contains:
+            - 'curl'
+            - 'certutil'
+        Image|endswith:
+            - 'cmd.exe'
+            - 'powershell.exe'
+        ParentImage|contains:
+            - 'wsus'
+            - 'WsusService'
+        
+    # Stage 2: PowerCat Shell Execution
+    powercat_shell:
+        CommandLine|contains:
+            - 'PowerCat'
+            - 'IEX'
+            - 'DownloadString'
+        Image|endswith: 'powershell.exe'
+        
+    # Stage 3: DLL Sideloading with ETDCtrlHelper
+    dll_sideload_etd:
+        Image|endswith: 'ETDCtrlHelper.exe'
+        CommandLine|contains: 'ETDApix.dll'
+        
+    # Stage 4: Scheduled Task Creation for Persistence
+    schtask_persistence:
+        CommandLine|contains|all:
+            - 'schtasks'
+            - '/create'
+            - 'Q-X64'
+        Image|endswith:
+            - 'cmd.exe'
+            - 'powershell.exe'
+        
+    # Stage 5: Process Injection Detection
+    process_injection:
+        CommandLine|contains:
+            - 'CreateRemoteThread'
+            - 'WriteProcessMemory'
+            - 'VirtualAllocEx'
+        Image|endswith:
+            - 'svchost.exe'
+            - 'lsass.exe'
+            - 'sSystem32'
+        
+    # Stage 6: System Process Enumeration
+    system_enumeration:
+        CommandLine|contains:
+            - 'tasklist'
+            - 'Get-Process'
+            - 'wmic'
+        Image|endswith:
+            - 'powershell.exe'
+            - 'cmd.exe'
+        
+    selection: |
+        wsus_rce_exploitation or
+        powercat_shell or
+        dll_sideload_etd or
+        schtask_persistence or
+        process_injection or
+        system_enumeration
+
+falsepositives:
+    - Legitimate WSUS updates and maintenance
+    - Antivirus software using similar techniques
+    - System administration PowerShell scripts
+    - Software installation utilities
+
+level: critical
+status: experimental
+tags:
+    - attack.persistence
+    - attack.defense_evasion
+    - attack.execution
+    - attack.privilege_escalation
+    - attack.lateral_movement
+    - apt.apt41
+    - apt.bronze_atlas
+    - cve.2025-59287
+    - malware.shadowpad

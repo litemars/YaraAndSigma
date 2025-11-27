@@ -11,8 +11,6 @@ tags:
   - attack.persistence
   - attack.t1547.001
   - attack.t1547.014
-  - apt.kimsuky
-  - malware.endclient_rat
 
 logsource:
   product: windows

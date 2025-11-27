@@ -6,8 +6,6 @@ author: litemars
 date: 2025/08/28
 tags:
     - attack.command_and_control
-    - attack.t1071.001  # Application Layer Protocol
-    - attack.t1102.002  # Bidirectional Communication
 logsource:
     category: network_connection
     product: windows

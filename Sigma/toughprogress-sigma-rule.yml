@@ -5,7 +5,6 @@ author: litemars
 date: 2025/10/09
 tags:
     - attack.command_and_control
-    - attack.t1071.001
 logsource:
     category: network_connection
     product: windows
