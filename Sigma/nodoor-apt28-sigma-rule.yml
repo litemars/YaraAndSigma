@@ -12,12 +12,7 @@ references:
   - https://www.infosecurity-magazine.com/news/russia-apt28-notdoor-outlook/
   - https://www.splunk.com/en_us/blog/security/notdoor-insights-a-closer-look-at-outlook-macros-and-more.html
 tags:
-  - attack.t1059.005        # VBA
-  - attack.t1566.002        # Spearphishing via service / email
-  - attack.t1114.003        # Email collection, client
-  - attack.t1071.004        # C2 over email
   - attack.t1574.002        # DLL sideloading
-  - attack.t1027
 
 logsource:
   product: windows

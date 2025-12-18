@@ -4,12 +4,7 @@ rule APT28_NotDoor_Outlook_VBA_Backdoor
         description = "Detects APT28 NotDoor Outlook VBA backdoor (event-driven macro C2 over email)"
         author      = "litemars"
         date        = "2025-12-18"
-        reference_1 = "S2 Grupo LAB52 NotDoor analysis"
-        reference_2 = "TheHackerNews - APT28 NotDoor Outlook backdoor"
-        reference_3 = "Splunk Threat Research - NotDoor Insights"
         malware     = "NotDoor"
-        family      = "APT28"
-        mitre       = "T1059.005,T1566.002,T1114.003,T1071.004,T1027"
 
     strings:
         // Outlook VBA event handlers abused by NotDoor
