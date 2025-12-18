@@ -1,8 +1,8 @@
 # Detection Rules Index
 
-**Generated:** 2025-11-20 08:22:38 UTC
+**Generated:** 2025-11-27 08:09:55 UTC
 
-**Total Rules:** 66 (29 YARA, 37 Sigma)
+**Total Rules:** 69 (31 YARA, 38 Sigma)
 
 ---
 
@@ -15,30 +15,32 @@
 | 3 | `APT_EndClient_RAT_Delivery` | `Yara/apt-endclient-rat.yar` |
 | 4 | `APT_MeshAgent_Weaponized_Awaken_Likho` | `Yara/apt-meshagent.yar` |
 | 5 | `APT_MostereRAT_Banking_Trojan` | `Yara/mostere-rat.yar` |
-| 6 | `APT_Tickler_Backdoor_Peach_Sandstorm` | `Yara/tickeler-backdoor.yar` |
-| 7 | `COLDRIVER_COLDCOPY_ClickFix_Lure` | `Yara/coldriver-no-robot.yar` |
-| 8 | `COLDRIVER_MAYBEROBOT_Powershell_Backdoor` | `Yara/coldriver-no-robot.yar` |
-| 9 | `COLDRIVER_NOROBOT_Downloader` | `Yara/coldriver-no-robot.yar` |
-| 10 | `COLDRIVER_YESROBOT_Python_Backdoor` | `Yara/coldriver-no-robot.yar` |
-| 11 | `Charon_DLL_Sideloading` | `Yara/Charon_DLL_Sideloading.yar` |
-| 12 | `Charon_Ransomware_August_2025` | `Yara/Charon_Ransomware_August_2025.yar` |
-| 13 | `DripDropper_Linux_Malware` | `Yara/dripdropper-malware.yar` |
-| 14 | `DripDropper_Network_IOCs` | `Yara/dripdropper-malware.yar` |
-| 15 | `GodRAT_Malware_August_2025` | `Yara/godrat-malware-august-2025.yar` |
-| 16 | `GodRAT_Steganography_Loader` | `Yara/godrat-steganography-loader.yar` |
-| 17 | `Kalambur_Backdoor_Detection` | `Yara/kalabur-backdoor.yar` |
-| 18 | `Kalambur_FileHash_Known_Sample` | `Yara/kalabur-backdoor.yar` |
-| 19 | `LameHug_APT28_Infostealer` | `Yara/lamehug-apt28-infostealer.yar` |
-| 20 | `MiniJunk_UserEnv_DLL_Loader` | `Yara/minijunk-dllloader.yar` |
-| 21 | `NET_STAR_IIServerCore` | `Yara/net-start.yar` |
-| 22 | `NubSpy_ScarCruft_Backdoor` | `Yara/nubspy-malware.yar` |
-| 23 | `PlugX_UNC6384_Detection` | `Yara/plugx.yar` |
-| 24 | `PyLangGhost_RAT_Lazarus_August_2025` | `Yara/py-lang-ghost-rat-lazarus-august-2025.yar` |
-| 25 | `ScarCruft_VCD_Ransomware` | `Yara/nubspy-malware.yar` |
-| 26 | `ShadowPad_Modular_Backdoor` | `Yara/shadowpad-backdoor.yar` |
-| 27 | `ToughProgress_APT41_2025` | `Yara/ToughProgress.yar` |
-| 28 | `ZEROLOT_Wiper_Malware` | `Yara/zerolot-malware.yar` |
-| 29 | `wAgent_Lazarus_Backdoor` | `Yara/wagent-lazarus-backdoor.yar` |
+| 6 | `APT_ShadowPad_Backdoor_Loader` | `Yara/shadowpad.yar` |
+| 7 | `APT_ShadowPad_C2_Communication` | `Yara/shadowpad.yar` |
+| 8 | `APT_Tickler_Backdoor_Peach_Sandstorm` | `Yara/tickeler-backdoor.yar` |
+| 9 | `COLDRIVER_COLDCOPY_ClickFix_Lure` | `Yara/coldriver-no-robot.yar` |
+| 10 | `COLDRIVER_MAYBEROBOT_Powershell_Backdoor` | `Yara/coldriver-no-robot.yar` |
+| 11 | `COLDRIVER_NOROBOT_Downloader` | `Yara/coldriver-no-robot.yar` |
+| 12 | `COLDRIVER_YESROBOT_Python_Backdoor` | `Yara/coldriver-no-robot.yar` |
+| 13 | `Charon_DLL_Sideloading` | `Yara/Charon_DLL_Sideloading.yar` |
+| 14 | `Charon_Ransomware_August_2025` | `Yara/Charon_Ransomware_August_2025.yar` |
+| 15 | `DripDropper_Linux_Malware` | `Yara/dripdropper-malware.yar` |
+| 16 | `DripDropper_Network_IOCs` | `Yara/dripdropper-malware.yar` |
+| 17 | `GodRAT_Malware_August_2025` | `Yara/godrat-malware-august-2025.yar` |
+| 18 | `GodRAT_Steganography_Loader` | `Yara/godrat-steganography-loader.yar` |
+| 19 | `Kalambur_Backdoor_Detection` | `Yara/kalabur-backdoor.yar` |
+| 20 | `Kalambur_FileHash_Known_Sample` | `Yara/kalabur-backdoor.yar` |
+| 21 | `LameHug_APT28_Infostealer` | `Yara/lamehug-apt28-infostealer.yar` |
+| 22 | `MiniJunk_UserEnv_DLL_Loader` | `Yara/minijunk-dllloader.yar` |
+| 23 | `NET_STAR_IIServerCore` | `Yara/net-start.yar` |
+| 24 | `NubSpy_ScarCruft_Backdoor` | `Yara/nubspy-malware.yar` |
+| 25 | `PlugX_UNC6384_Detection` | `Yara/plugx.yar` |
+| 26 | `PyLangGhost_RAT_Lazarus_August_2025` | `Yara/py-lang-ghost-rat-lazarus-august-2025.yar` |
+| 27 | `ScarCruft_VCD_Ransomware` | `Yara/nubspy-malware.yar` |
+| 28 | `ShadowPad_Modular_Backdoor` | `Yara/shadowpad-backdoor.yar` |
+| 29 | `ToughProgress_APT41_2025` | `Yara/ToughProgress.yar` |
+| 30 | `ZEROLOT_Wiper_Malware` | `Yara/zerolot-malware.yar` |
+| 31 | `wAgent_Lazarus_Backdoor` | `Yara/wagent-lazarus-backdoor.yar` |
 
 ---
 
@@ -55,7 +57,8 @@
 | 5 | DripDropper Apache ActiveMQ Exploitation | `Sigma/dripdropper-activemq-exploitation-sigma-rule.yml` |
 | 6 | LameHug APT28 LLM-Powered Infostealer Detection | `Sigma/lamehug-apt28-infostealer.yml` |
 | 7 | ScarCruft VCD Ransomware Deployment | `Sigma/nubspy-vcd-ransomware-deployment-sigma-rule.yml` |
-| 8 | ZEROLOT Wiper Malware Detection | `Sigma/zerolot-wiper-malware-detection-sigma-rule.yml` |
+| 8 | ShadowPad Backdoor Deployment and C2 Communication | `Sigma/shadowpad-backdoor-deployment-sigma-rule.yml` |
+| 9 | ZEROLOT Wiper Malware Detection | `Sigma/zerolot-wiper-malware-detection-sigma-rule.yml` |
 
 ### 🟠 HIGH
 
