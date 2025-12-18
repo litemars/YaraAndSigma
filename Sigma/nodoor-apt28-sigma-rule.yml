@@ -1,0 +1,46 @@
+title: APT28 NotDoor Outlook Backdoor Activity
+id: 5a6c1a2b-0cb9-4b84-9d3f-9e0af2d9b8e1
+status: experimental
+description: >
+  Detects behavioral indicators of the APT28 NotDoor Outlook VBA backdoor, including
+  DLL sideloading via OneDrive.exe and Outlook-based C2/exfil.
+author: litemars
+date: 2025-12-18
+references:
+  - https://lab52.io/blog/analyzing-notdoor-inside-apt28s-expanding-arsenal/
+  - https://thehackernews.com/2025/09/russian-apt28-deploys-notdoor-outlook.html
+  - https://www.infosecurity-magazine.com/news/russia-apt28-notdoor-outlook/
+  - https://www.splunk.com/en_us/blog/security/notdoor-insights-a-closer-look-at-outlook-macros-and-more.html
+tags:
+  - attack.t1059.005        # VBA
+  - attack.t1566.002        # Spearphishing via service / email
+  - attack.t1114.003        # Email collection, client
+  - attack.t1071.004        # C2 over email
+  - attack.t1574.002        # DLL sideloading
+  - attack.t1027
+
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  # Suspicious OneDrive.exe DLL sideloading pattern (SSPICLI.dll in non-standard path)
+  onedrive_sideload_proc:
+    Image|endswith:
+      - '\OneDrive.exe'
+    CommandLine|contains:
+      - 'OneDrive'
+  onedrive_sideload_dll:
+    ImageLoaded|endswith:
+      - '\SSPICLI.dll'
+    ImageLoaded|contains:
+      - '\AppData\Local\Temp\'
+      - '\ProgramData\'
+      - '\Users\Public\'
+
+  # Outlook started with abnormal macro/security configuration changes
+  outlook_proc:
+    Image|endswith:
+      - '\OUTLOOK.EXE'
+  # Macro / security related registry changes are modeled in a second logsource
+  condition: onedrive_sideload_proc and onedrive_sideload_dll
