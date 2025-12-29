@@ -1,8 +1,8 @@
 # Detection Rules Index
 
-**Generated:** 2025-12-18 16:19:24 UTC
+**Generated:** 2025-12-29 15:26:55 UTC
 
-**Total Rules:** 71 (32 YARA, 39 Sigma)
+**Total Rules:** 74 (33 YARA, 41 Sigma)
 
 ---
 
@@ -14,34 +14,35 @@
 | 2 | `APT41_ToughProgress` | `Yara/apt41-tough-progress.yar` |
 | 3 | `APT_EggStreme_Framework` | `Yara/eggstreme-malware.yar` |
 | 4 | `APT_EndClient_RAT_Delivery` | `Yara/apt-endclient-rat.yar` |
-| 5 | `APT_MeshAgent_Weaponized_Awaken_Likho` | `Yara/apt-meshagent.yar` |
-| 6 | `APT_MostereRAT_Banking_Trojan` | `Yara/mostere-rat.yar` |
-| 7 | `APT_ShadowPad_Backdoor_Loader` | `Yara/shadowpad.yar` |
-| 8 | `APT_ShadowPad_C2_Communication` | `Yara/shadowpad.yar` |
-| 9 | `APT_Tickler_Backdoor_Peach_Sandstorm` | `Yara/tickeler-backdoor.yar` |
-| 10 | `COLDRIVER_COLDCOPY_ClickFix_Lure` | `Yara/coldriver-no-robot.yar` |
-| 11 | `COLDRIVER_MAYBEROBOT_Powershell_Backdoor` | `Yara/coldriver-no-robot.yar` |
-| 12 | `COLDRIVER_NOROBOT_Downloader` | `Yara/coldriver-no-robot.yar` |
-| 13 | `COLDRIVER_YESROBOT_Python_Backdoor` | `Yara/coldriver-no-robot.yar` |
-| 14 | `Charon_DLL_Sideloading` | `Yara/Charon_DLL_Sideloading.yar` |
-| 15 | `Charon_Ransomware_August_2025` | `Yara/Charon_Ransomware_August_2025.yar` |
-| 16 | `DripDropper_Linux_Malware` | `Yara/dripdropper-malware.yar` |
-| 17 | `DripDropper_Network_IOCs` | `Yara/dripdropper-malware.yar` |
-| 18 | `GodRAT_Malware_August_2025` | `Yara/godrat-malware-august-2025.yar` |
-| 19 | `GodRAT_Steganography_Loader` | `Yara/godrat-steganography-loader.yar` |
-| 20 | `Kalambur_Backdoor_Detection` | `Yara/kalabur-backdoor.yar` |
-| 21 | `Kalambur_FileHash_Known_Sample` | `Yara/kalabur-backdoor.yar` |
-| 22 | `LameHug_APT28_Infostealer` | `Yara/lamehug-apt28-infostealer.yar` |
-| 23 | `MiniJunk_UserEnv_DLL_Loader` | `Yara/minijunk-dllloader.yar` |
-| 24 | `NET_STAR_IIServerCore` | `Yara/net-start.yar` |
-| 25 | `NubSpy_ScarCruft_Backdoor` | `Yara/nubspy-malware.yar` |
-| 26 | `PlugX_UNC6384_Detection` | `Yara/plugx.yar` |
-| 27 | `PyLangGhost_RAT_Lazarus_August_2025` | `Yara/py-lang-ghost-rat-lazarus-august-2025.yar` |
-| 28 | `ScarCruft_VCD_Ransomware` | `Yara/nubspy-malware.yar` |
-| 29 | `ShadowPad_Modular_Backdoor` | `Yara/shadowpad-backdoor.yar` |
-| 30 | `ToughProgress_APT41_2025` | `Yara/ToughProgress.yar` |
-| 31 | `ZEROLOT_Wiper_Malware` | `Yara/zerolot-malware.yar` |
-| 32 | `wAgent_Lazarus_Backdoor` | `Yara/wagent-lazarus-backdoor.yar` |
+| 5 | `APT_HoneyMyte_ToneShell_KernelRootkit_Dec2025` | `Yara/toneshell-kernell-rootkit.yar` |
+| 6 | `APT_MeshAgent_Weaponized_Awaken_Likho` | `Yara/apt-meshagent.yar` |
+| 7 | `APT_MostereRAT_Banking_Trojan` | `Yara/mostere-rat.yar` |
+| 8 | `APT_ShadowPad_Backdoor_Loader` | `Yara/shadowpad.yar` |
+| 9 | `APT_ShadowPad_C2_Communication` | `Yara/shadowpad.yar` |
+| 10 | `APT_Tickler_Backdoor_Peach_Sandstorm` | `Yara/tickeler-backdoor.yar` |
+| 11 | `COLDRIVER_COLDCOPY_ClickFix_Lure` | `Yara/coldriver-no-robot.yar` |
+| 12 | `COLDRIVER_MAYBEROBOT_Powershell_Backdoor` | `Yara/coldriver-no-robot.yar` |
+| 13 | `COLDRIVER_NOROBOT_Downloader` | `Yara/coldriver-no-robot.yar` |
+| 14 | `COLDRIVER_YESROBOT_Python_Backdoor` | `Yara/coldriver-no-robot.yar` |
+| 15 | `Charon_DLL_Sideloading` | `Yara/Charon_DLL_Sideloading.yar` |
+| 16 | `Charon_Ransomware_August_2025` | `Yara/Charon_Ransomware_August_2025.yar` |
+| 17 | `DripDropper_Linux_Malware` | `Yara/dripdropper-malware.yar` |
+| 18 | `DripDropper_Network_IOCs` | `Yara/dripdropper-malware.yar` |
+| 19 | `GodRAT_Malware_August_2025` | `Yara/godrat-malware-august-2025.yar` |
+| 20 | `GodRAT_Steganography_Loader` | `Yara/godrat-steganography-loader.yar` |
+| 21 | `Kalambur_Backdoor_Detection` | `Yara/kalabur-backdoor.yar` |
+| 22 | `Kalambur_FileHash_Known_Sample` | `Yara/kalabur-backdoor.yar` |
+| 23 | `LameHug_APT28_Infostealer` | `Yara/lamehug-apt28-infostealer.yar` |
+| 24 | `MiniJunk_UserEnv_DLL_Loader` | `Yara/minijunk-dllloader.yar` |
+| 25 | `NET_STAR_IIServerCore` | `Yara/net-start.yar` |
+| 26 | `NubSpy_ScarCruft_Backdoor` | `Yara/nubspy-malware.yar` |
+| 27 | `PlugX_UNC6384_Detection` | `Yara/plugx.yar` |
+| 28 | `PyLangGhost_RAT_Lazarus_August_2025` | `Yara/py-lang-ghost-rat-lazarus-august-2025.yar` |
+| 29 | `ScarCruft_VCD_Ransomware` | `Yara/nubspy-malware.yar` |
+| 30 | `ShadowPad_Modular_Backdoor` | `Yara/shadowpad-backdoor.yar` |
+| 31 | `ToughProgress_APT41_2025` | `Yara/ToughProgress.yar` |
+| 32 | `ZEROLOT_Wiper_Malware` | `Yara/zerolot-malware.yar` |
+| 33 | `wAgent_Lazarus_Backdoor` | `Yara/wagent-lazarus-backdoor.yar` |
 
 ---
 
@@ -96,10 +97,12 @@
 |---|-------|------|
 | 1 | APT28 NotDoor Outlook Backdoor Activity | `Sigma/nodoor-apt28-sigma-rule.yml` |
 | 2 | DripDropper Post-Exploitation Patching | `Sigma/dripdropper-post-exploitation-patching-sigma-rule.yml` |
-| 3 | NubSpy PubNub C2 Communication | `Sigma/nubspy-pubnub-c2-communication-sigma-rule.yml` |
-| 4 | ScarCruft Multi-Language Lure Detection | `Sigma/nubspy-multi-language-lure-detection-sigma-rule.yml` |
-| 5 | ScarCruft Registry Autorun Disabling | `Sigma/nubspy-registry-autorun-disabling-sigma-rule.yml` |
-| 6 | ZEROLOT Network Communication Patterns | `Sigma/zerolot-network-communication-patterns-sigma-rule.yml` |
+| 3 | HoneyMyte ToneShell Host Identifier File Creation | `Sigma/toneshell-host-identifier-sigma-rule.yml` |
+| 4 | HoneyMyte ToneShell Network C2 Communication with Fake TLS Headers | `Sigma/toneshell-c2-communication-sigma-rule.yml` |
+| 5 | NubSpy PubNub C2 Communication | `Sigma/nubspy-pubnub-c2-communication-sigma-rule.yml` |
+| 6 | ScarCruft Multi-Language Lure Detection | `Sigma/nubspy-multi-language-lure-detection-sigma-rule.yml` |
+| 7 | ScarCruft Registry Autorun Disabling | `Sigma/nubspy-registry-autorun-disabling-sigma-rule.yml` |
+| 8 | ZEROLOT Network Communication Patterns | `Sigma/zerolot-network-communication-patterns-sigma-rule.yml` |
 
 
 ---
