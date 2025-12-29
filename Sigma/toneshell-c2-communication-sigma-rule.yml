@@ -1,0 +1,39 @@
+title: HoneyMyte ToneShell Network C2 Communication with Fake TLS Headers
+id: 1d7e5f04-8g0h-6i6j-2d4e-0h1i6f5g2d7e
+status: experimental
+description: |
+  Detects ToneShell backdoor C2 communication over TCP port 443 using fake TLS 1.3 headers
+  to known HoneyMyte infrastructure domains.
+author: litemars
+date: 2025-12-29
+references:
+  - https://securelist.com/honeymyte-kernel-mode-rootkit/118590/
+tags:
+  - attack.t1071.001
+  - attack.t1573.001
+
+logsource:
+  product: windows
+  category: network_connection
+
+detection:
+  toneshell_c2_domains:
+    DestinationHostname|endswith:
+      - 'avocadomechanism.com'
+      - 'potherbreference.com'
+    DestinationPort: 443
+    Protocol: 'tcp'
+  
+  toneshell_c2_process:
+    Image|endswith: '\svchost.exe'
+    DestinationPort: 443
+    Protocol: 'tcp'
+    Initiated: 'true'
+    
+  suspicious_raw_tcp_443:
+    DestinationPort: 443
+    Protocol: 'tcp'
+    Image|endswith: '\svchost.exe'
+    DestinationIsIpv4: 'false' # Likely uses domain
+    
+  condition: toneshell_c2_domains or (toneshell_c2_process and suspicious_raw_tcp_443)

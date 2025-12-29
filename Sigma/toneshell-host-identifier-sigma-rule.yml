@@ -1,0 +1,30 @@
+
+title: HoneyMyte ToneShell Host Identifier File Creation
+id: 2e8f6g15-9h1i-7j7k-3e5f-1i2j7g6h3e8f
+status: experimental
+description: |
+  Detects creation of ToneShell backdoor host identifier file (MicrosoftOneDrive.tlb) in ProgramData
+  directory used for persistent victim tracking.
+author: litemars
+date: 2025-12-29
+references:
+  - https://securelist.com/honeymyte-kernel-mode-rootkit/118590/
+tags:
+  - attack.t1027
+  - attack.t1036.005
+
+logsource:
+  product: windows
+  category: file_event
+
+detection:
+  toneshell_host_id_file:
+    TargetFilename|endswith: '\MicrosoftOneDrive.tlb'
+    TargetFilename|contains: '\ProgramData\'
+    
+  suspicious_tlb_creation:
+    TargetFilename|endswith: '.tlb'
+    TargetFilename|contains: '\ProgramData\'
+    Image|endswith: '\svchost.exe'
+    
+  condition: toneshell_host_id_file or suspicious_tlb_creation
