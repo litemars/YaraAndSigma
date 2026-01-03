@@ -1,0 +1,42 @@
+title: APT36 RAT DLL Loading and C2 Communication
+id: 9h5c1d4e-6f7g-8c3h-0d1e-2f3g4h5i6j7k
+status: experimental
+description: |
+  Detects loading of APT36 RAT DLL (iinneldc.dll or wininet.dll from PcDirvs campaign)
+  and subsequent C2 communication to wmiprovider.com using reversed endpoint strings.
+author: litemars
+date: 2026-01-03
+references:
+  - https://thehackernews.com/2026/01/transparent-tribe-launches-new-rat.html
+tags:
+  - attack.t1071.001
+  - attack.t1573.001
+
+logsource:
+  product: windows
+  category: image_load
+
+detection:
+  rat_dll_load:
+    ImageLoaded|endswith:
+      - '\iinneldc.dll'
+      - '\PcDirvs\wininet.dll'
+      - '\PcDirvs\pdf.dll'
+    Image|endswith:
+      - '\rundll32.exe'
+      - '\PcDirvs.exe'
+      - '\regsvr32.exe'
+      
+  suspicious_dll_path:
+    ImageLoaded|contains:
+      - '\ProgramData\PcDirvs\'
+      - '\Users\Public\core\'
+      - '\AppData\Local\Temp\'
+    ImageLoaded|endswith: '.dll'
+    
+  condition: rat_dll_load or suspicious_dll_path
+
+falsepositives:
+  - Very rare - monitor for false positives
+
+level: critical

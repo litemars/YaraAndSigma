@@ -1,0 +1,42 @@
+title: APT36 C2 Network Communication with Reversed Endpoints
+id: 0i6d2e5f-7g8h-9d4i-1e2f-3g4h5i6j7k8l
+status: experimental
+description: |
+  Detects APT36 RAT network connections to C2 domains (wmiprovider.com, aeroclubofindia.co.in)
+  using reversed string endpoints (/retsiger, /taebtraeh, /dnammoc_teg).
+author: litemars
+date: 2026-01-03
+references:
+  - https://thehackernews.com/2026/01/transparent-tribe-launches-new-rat.html
+tags:
+  - attack.t1071.001
+  - attack.t1132.001
+
+logsource:
+  product: windows
+  category: network_connection
+
+detection:
+  apt36_c2_domains:
+    DestinationHostname|endswith:
+      - 'wmiprovider.com'
+      - 'aeroclubofindia.co.in'
+      - 'dns.wmiprovider.com'
+    Initiated: 'true'
+    
+  suspicious_process_network:
+    Image|endswith:
+      - '\PcDirvs.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+    DestinationPort:
+      - 80
+      - 443
+      - 8080
+      
+  condition: apt36_c2_domains or suspicious_process_network
+
+falsepositives:
+  - None expected - these are specific malicious infrastructure
+
+level: critical
